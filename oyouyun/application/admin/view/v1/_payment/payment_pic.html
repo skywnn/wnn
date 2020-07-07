@@ -1,0 +1,89 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <div class="layui-upload-list">
+                        <div class="HY-imgup">
+                            <img class="layui-upload-img" id="pre_img" height="90px">
+                        </div>
+                        <p class="pull-left">上传允许文件类型为<strong>png,jpg</strong> 图像文件
+                            <br>上传图片建议尺寸：<strong>{$pic.width}</strong>像素 * <strong>{$pic.height}</strong>像素 （比例<strong>1:1</strong>）大小不超过<strong>1M</strong></p>
+                    </div>
+                    <a href="javascript:;" class="hy-upload"> 选择图片
+                        <input type="file" name="image" id="exampleInputFile">
+                    </a>
+                    <input type="hidden" name="id" value="{$item.id}" />
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn " id="test9" lay-submit lay-filter="set-form-element">
+                            <i class="layui-icon layui-icon-ok"></i> 上传
+                        </button>
+                        <button class="layui-btn layui-btn-primary" id="close">
+                            <i class="layui-icon layui-icon-close"></i> 取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','upload'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,upload = layui.upload
+            ,form = layui.form;
+        //绑定原始文件域
+        upload.render({
+            elem: '#exampleInputFile'
+            ,url: "{:url('admin/v1.Payment/uplaodPic')}?id={$item.id}"
+            ,auto: false
+            ,bindAction: '#test9'
+            ,done: function(res, index, upload){
+                if(res.code != 200){
+                    return layer.msg('上传失败');
+                }
+                //上传成功后
+                return layer.msg(res.msg);
+            }
+        });
+
+        form.on('submit(set-form-element)', function (data) {
+            $('.layui-btn').addClass('layui-disabled').attr('disabled','disabled');
+            $.ajax({
+                url:"{:url('admin/v1.Payment/paymentPic')}",
+                type:'post',
+                dataType:'json',
+                data:data.field,
+                success:function(res){
+                    if (res.code == 200) {
+                        wk.success(res.msg,'wk.layer_close()');
+                    } else {
+                        wk.error(res.msg,'$(".layui-btn").removeClass(\'layui-disabled\').removeAttr(\'disabled\')');
+                    }
+                }
+            })
+            return false;
+        });
+
+        //返回取消按钮
+        $('#close').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+        /* 如果是较新的浏览器可以直接使用以下JS实现*/
+        $("#exampleInputFile").change(function(){
+            var pic = this.files[0];
+            var xiao = window.URL.createObjectURL(pic);
+            $("#pre_img").attr('src', xiao);
+        });
+    });
+</script>
+</body>
+</html>

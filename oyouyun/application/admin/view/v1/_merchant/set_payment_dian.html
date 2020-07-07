@@ -1,0 +1,190 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid layui-col-md12">
+    <div class="layui-card">
+        <form class="layui-form">
+            <div class="layui-card-body">
+                <input type="hidden" name="operate_id" value="{:session('user_id')}">
+                <input type="hidden" name="company_id" value="{:session('company_id')}">
+                <input type="hidden" name="merchant_id" value="{$item.id}">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">缴费商户</label>
+                        <div class="layui-input-inline hy-form-name">
+                            <div class="layui-form-mid layui-word-aux">{$item.title}</div>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">缴费类目</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="cate_name"  lay-verify="required" value="电费" disabled autocomplete="off" placeholder="￥" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item hy-form-item-md8">
+                    <label class="layui-form-label">缴费单名称</label>
+                    <div class="layui-input-inline hy-form-name">
+                        <input type="text" name="title"  lay-verify="required" value="" autocomplete="off" placeholder="请注明缴费单月份" class="layui-input">
+                        <div class="layui-form-mid layui-word-aux"><span class="hy-form-star">*</span>&nbsp必填项</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">上次抄表</label>
+                        <div class="layui-input-inline">
+                            <input type="number" name="lto_dian" value="{$item.lto_dian}" class="layui-input" id="lastreading" lay-verify="required" autocomplete="off" placeholder="上次抄表数">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">本次抄表</label>
+                        <div class="layui-input-inline">
+                            <input type="number" name="leo_dian"  lay-verify="required" value="" autocomplete="off" id="meterreading" placeholder="本次抄表数" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">月单价</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="unit_price" value="" class="layui-input" lay-verify="required" id="unitprice" autocomplete="off" placeholder="月单价">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">数量</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="number"  lay-verify="required" value="" autocomplete="off" id="num" placeholder="请输入数量" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">小计金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="cost"  lay-verify="required" value="" id="subtotal" autocomplete="off" placeholder="￥" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">提醒时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="remind_time" value="" class="layui-input" lay-verify="required" autocomplete="off" onclick="wk.lay_date(this);" placeholder="提醒时间">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="set-form-element">
+                            <i class="layui-icon layui-icon-ok"></i> 提交
+                        </button>
+                        <button class="layui-btn layui-btn-primary" id="close">
+                            <i class="layui-icon layui-icon-close"></i> 取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','element','upload','layedit','laydate'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,element = layui.element
+            ,upload = layui.upload
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate
+            ,form = layui.form;
+            let  lastpayment=0;
+            let meterreading=0;
+            let unitprice=0;
+             let cha=0;
+             $("#lastreading").val(" ");
+             //上次抄表：
+           $("#lastreading").blur(function(){
+            var _this = $(this);
+            lastpayment=_this.val();
+             console.log("上次抄表："+lastpayment);
+             console.log("上次抄表："+ $("#meterreading").val());
+             console.log("数量："+ $("#num").val());
+             console.log("月单价："+$("#unitprice").val());
+             if(lastpayment<$("#meterreading").val()){
+                 let cha=parseFloat($("#meterreading").val())-parseFloat(lastpayment);
+                   $("#num").val(cha.toFixed(2))
+             }else{
+                $("#num").val("0")
+             }
+             if($("#unitprice").val()!=0&&$("#num").val()!=0){
+               let zongprice=parseFloat($("#unitprice").val())*parseFloat($("#num").val())
+               console.log("总价："+zongprice)
+                $("#subtotal").val(zongprice.toFixed(2))   
+           }else{
+            $("#subtotal").val('0')  
+           }
+            });
+     //本次抄表
+          $("#meterreading").blur(function(){
+            var _this = $(this);
+            meterreading=_this.val();
+              console.log("上次"+meterreading);
+               console.log("本次"+lastpayment);
+               console.log("上次抄表："+$("#lastreading").val());
+             console.log("本次抄表："+ $("#meterreading").val());
+             console.log("数量："+ $("#num").val());
+             console.log("月单价："+$("#unitprice").val());
+               if(meterreading>=$("#lastreading").val()){
+                    cha=parseFloat(meterreading)-parseFloat(lastpayment);
+                   $("#num").val(cha.toFixed(2))
+                   console.log(cha);
+                   
+               }
+            if($("#unitprice").val()!=0||("#num").val()!=0){
+               let zongprice=parseFloat($("#unitprice").val())*parseFloat($("#num").val())
+               console.log(zongprice)
+                $("#subtotal").val(zongprice.toFixed(2))   
+           }
+           
+            });
+       $("#unitprice").blur(function(){
+            var _this = $(this);
+            unitprice=_this.val();
+             console.log(unitprice);     
+              console.log("月单价"+unitprice);
+             let chareading= $("#num").val();
+             console.log("差值："+chareading)
+              console.log("上次抄表："+$("#lastreading").val());
+             console.log("本次抄表："+ $("#meterreading").val());
+             console.log("数量："+ $("#num").val());
+             console.log("月单价："+$("#unitprice").val());
+             if(unitprice!=0&&chareading!=0){
+               let zongprice=parseFloat(unitprice)*parseFloat($("#num").val())
+               console.log(zongprice)
+                $("#subtotal").val(zongprice.toFixed(2))   
+              }
+            });
+      
+        form.on('submit(set-form-element)', function (data) {
+            $('.layui-btn').addClass('layui-disabled').attr('disabled','disabled');
+            $.ajax({
+                url: "{:url('admin/v1.Merchant/setPaymentDian')}",
+                type:'post',
+                dataType:'json',
+                data:data.field,
+                success:function(res){
+                    if (res.code == 200) {
+                        wk.success(res.msg,'wk.layer_close()');
+                        parent.location.reload();
+                    } else {
+                        wk.error(res.msg,'$(".layui-btn").removeClass(\'layui-disabled\').removeAttr(\'disabled\')');
+                    }
+                }
+            })
+        });
+        //返回取消按钮
+        $('#close').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+    });
+</script>
+</body>
+</html>

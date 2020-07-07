@@ -1,0 +1,122 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-header layui-form layuiadmin-card-header-auto">
+            <!--列表页头部-->
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    关键字
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-input-inline" style="width: 300px">
+                        <input type="text" id="key" name="keyword" value="" placeholder="请输入企业服务标题" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" lay-submit="" lay-filter="LAY-search">
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                        <button  class="layui-btn layui-btn-danger" id="empty"  lay-submit="" lay-filter="LAY-search">
+                            <i class="layui-icon layui-icon-refresh layuiadmin-button-btn"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-inline layui-layout-right" id="HY-listTop-right" style="padding-right: 10px; padding-top: 15px;">
+                    <!--<button class="layui-btn" id="HY-listTop-add" lay-event="add">-->
+                    <!--<i class="fa fa-plus layuiadmin-button-btn"></i> 添加新活动-->
+                    <!--</button>-->
+                    <button class="layui-btn" id="HY-listTop-cate" lay-event="catelist">
+                        <i class="fa fa-bars layuiadmin-button-btn"></i> 分类管理
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <!--表单主体-->
+            <table id="LAY-table-manage" lay-filter="LAY-table-manage"></table>
+            <!--图片模板-->
+            <script type="text/html" id="HY-imgTpl">
+                <img src="__STATIC__{{d.pic}}" class="layui-table-img" onerror="this.src='__STATIC__/admin/images/head_default.gif'" style="height: 28px"/>
+            </script>
+            <!--状态模板-->
+            <script type="text/html" id="HY-staBar">
+                <input type="checkbox" name="switch" value="{{d.id}}"  lay-skin="switch"  lay-text="ON|OFF" lay-filter="OnOff"{{ d.status == 1 ? 'checked' : '' }} >
+            </script>
+            <!--操作模板-->
+            <script type="text/html" id="HY-table-toolbar">
+                <a class="layui-btn layui-btn-xs" lay-event="read"><i class="fa fa-pencil"></i> 查看</a>
+            </script>
+        </div>
+        <div class="container-fluid">
+            <p style="text-align: center;line-height: 30px; padding-bottom: 20px;">填写表单时注意填写项的具体要求，上传图片时注意图片格式与大小的限制<br/>
+                内部资料，严禁外泄，公司对平台数据信息保留责任追溯的权利。</p>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','table','laydate'], function () {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form
+            ,table = layui.table
+            ,laydate = layui.laydate;
+
+        table.render({
+            elem: '#LAY-table-manage'
+            ,url: "{:url('admin/v1.Product/productOrder')}"
+            ,response: {
+                statusCode: 220 //成功的状态码，默认：0
+            }
+
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers', title: '序号', width: 60}
+                ,{field: 'pic', title: '缩略图', width: 80, align: 'center', templet: '#HY-imgTpl'}
+                ,{field: 'title', title: '活动标题', minwidth: 350}
+                ,{field: 'name', title: '分类名称', width: 100}
+                ,{field: 'contacts', title: '联系人', width: 120}
+                ,{field: 'phone', title: '联系电话', width: 120}
+                ,{field: 'create_time', title: '创建时间', width: 160, sort: true}
+                ,{field: 'update_time', title: '更新时间', width: 160, sort: true}
+                ,{field: 'status', fixed: 'right', width: 90, title: '状态', align: 'center', templet: '#HY-staBar'}
+                ,{title: '操作', width: 300, align: 'center', fixed: 'right', toolbar: '#HY-table-toolbar'}
+            ]]
+            ,page: true
+            ,limits: [10, 15]
+            ,limit: 10
+            ,text: {
+                none: '对不起，暂无相关数据' //默认：无数据
+            }
+        });
+
+        //分类按钮
+        // $('#HY-listTop-cate').click(function () {
+        //     var url = "{:url('admin/v1.Product/cateIndex')}";
+        //     wk.href(url);
+        // });
+        //监听状态开关操作
+        form.on('switch(OnOff)', function (obj) {
+            var num = '';
+            obj.elem.checked == true? num = 1: num = 2;
+            //数据状态
+            wk.status(this.value,num, '{:url(\'admin/v1.Product/auditProduct\')}',obj);
+        });
+        //监听表格右侧工具条
+        table.on('tool(LAY-table-manage)', function(obj){
+            var data = obj.data;
+            switch(obj.event){
+
+                case 'read':  //修改编辑
+                    var url = "{:url('admin/v1.Product/readProductOrder')}?id="+data.id;
+                    wk.layer_show_url('订单详情',url,750,440);
+                    break;
+
+            }
+        });
+    });
+</script>
+</body>
+</html>

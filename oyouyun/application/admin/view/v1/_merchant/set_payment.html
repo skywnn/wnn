@@ -1,0 +1,97 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid layui-col-md12">
+    <div class="layui-card">
+        <form class="layui-form">
+            <div class="layui-card-body">
+                <input type="hidden" name="operate_id" value="{:session('user_id')}">
+                <input type="hidden" name="company_id" value="{:session('company_id')}">
+                <input type="hidden" name="merchant_id" value="{$item.id}">
+                <div class="layui-form-item hy-form-item-md8">
+                    <label class="layui-form-label">缴费商户</label>
+                    <div class="layui-input-inline hy-form-name">
+                        <div class="layui-form-mid layui-word-aux">{$item.title}</div>
+                    </div>
+                </div>
+                <div class="layui-form-item hy-form-item-md8">
+                    <label class="layui-form-label">缴费单名称</label>
+                    <div class="layui-input-inline hy-form-name">
+                        <input type="text" name="title"  lay-verify="required" value="" autocomplete="off" placeholder="请注明缴费单月份" class="layui-input">
+                        <div class="layui-form-mid layui-word-aux"><span class="hy-form-star">*</span>&nbsp必填项</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">款项名称</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="cate_name" value="房租" title="房租" checked>
+                        <input type="radio" name="cate_name" value="物业费" title="物业费">
+                        <input type="radio" name="cate_name" value="电费" title="电费">
+                        <input type="radio" name="cate_name" value="停车费" title="停车费">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">缴费时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="end_time" class="layui-input" lay-verify="required" autocomplete="off" onclick="wk.lay_date(this);" placeholder="截止日期">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="cost"  lay-verify="required" value="" autocomplete="off" placeholder="￥" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="set-form-element">
+                            <i class="layui-icon layui-icon-ok"></i> 提交
+                        </button>
+                        <button class="layui-btn layui-btn-primary" id="close">
+                            <i class="layui-icon layui-icon-close"></i> 取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','element','upload','layedit','laydate'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,element = layui.element
+            ,upload = layui.upload
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate
+            ,form = layui.form;
+
+        form.on('submit(set-form-element)', function (data) {
+            $('.layui-btn').addClass('layui-disabled').attr('disabled','disabled');
+            $.ajax({
+                url: "{:url('admin/v1.Merchant/setPayment')}",
+                type:'post',
+                dataType:'json',
+                data:data.field,
+                success:function(res){
+                    if (res.code == 200) {
+                        wk.success(res.msg,'wk.layer_close()');
+                        parent.location.reload();
+                    } else {
+                        wk.error(res.msg,'$(".layui-btn").removeClass(\'layui-disabled\').removeAttr(\'disabled\')');
+                    }
+                }
+            })
+        });
+        //返回取消按钮
+        $('#close').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+    });
+</script>
+</body>
+</html>

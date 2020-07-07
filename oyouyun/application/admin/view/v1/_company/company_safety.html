@@ -1,0 +1,106 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-header layuiadmin-card-header-auto">安全机制</div>
+        <div class="layui-row layui-col-md12 hy-set-sider">
+            <div class="layui-col-md1 hy-set-logo">
+                <p><img src="{$item.logo}" data-original="{$item.logo}" class="hy-set-img layui-circle" onerror="this.src='__STATIC__/admin/images/head_default.gif'"></p>
+                <p class="hy-set-edit"><a lay-href="#">修改头像</a></p>
+            </div>
+            <div class="layui-col-md11 hy-set-top">
+                <p><span>登录账号：</span>{$item.title} （{if $item['is_real'] == 1}<span class="hy-red">您已通过实名认证</span>{elseif $item['is_real'] == 2}<span class="hy-blue">您尚未进行实名认证</span>{/if}）</p>
+                <p><span>账号ID：</span>{$item.id}</p>
+                <p><span>注册时间：</span>{$item.create_time}</p>
+            </div>
+        </div>
+        <div class="layui-col-md12 hy-set-sider">
+            <p class="hy-set-edit">
+            <div class="layui-show-lg-inline-block">账户安全程度:</div>
+            <div class="layui-progress layui-progress-big layui-show-lg-inline-block" style="width: 200px">
+                <div class="layui-progress-bar layui-bg-red" lay-percent="50%"></div>
+            </div>
+            <div class="layui-show-lg-inline-block">安全等级：</div><div class="layui-show-lg-inline-block hy-desc-red">中</div><div class="layui-show-lg-inline-block">继续努力</div></p>
+        </div>
+        <div class="layui-col-md12  hy-set-sider-b">
+            <ul style="padding-bottom: 30px;">
+                <li class="hy-set-item">
+                    <div class="hy-set-left layui-show-lg-inline-block hy-bold">登录密码</div>
+                    <div class="hy-set-mid layui-show-lg-inline-block">安全性高的密码可以使帐号更安全。建议您定期更换密码，设置一个包含字母，符号或数字中至少两项且长度超过6位的密码。</div>
+                    <div class="hy-set-right layui-show-lg-inline-block">
+                        {if $item['tel'] == ''}
+                        <span class="hy-green"><i class="layui-icon layui-icon-tips"></i> 未设置</span>
+                        {elseif $item['tel'] != ''}
+                        <span class="hy-red"><i class="layui-icon layui-icon-ok-circle"></i> 已设置</span>
+                        {/if}
+                        <span>|</span> <span class="hy-desc-blue" id="setPwd">修改</span></div>
+                </li>
+                <li class="hy-set-item">
+                    <div class="hy-set-left layui-show-lg-inline-block hy-bold">手机绑定</div>
+                    <div class="hy-set-mid layui-show-lg-inline-block">您已绑定了手机 <span class="hy-desc-green">{$item.phone}</span> [您的手机为安全手机，可以找回密码，但不能用于登录]</div>
+                    <div class="hy-set-right layui-show-lg-inline-block">
+                        {if $item['phone'] == ''}
+                        <span class="hy-green"><i class="layui-icon layui-icon-tips"></i> 未设置</span>
+                        {elseif $item['phone'] != ''}
+                        <span class="hy-red"><i class="layui-icon layui-icon-ok-circle"></i> 已设置</span>
+                        {/if}
+                        <span>|</span> <a class="hy-desc-blue" id="HY-companySafety-Phone">修改</a></div>
+                </li>
+                <li class="hy-set-item">
+                    <div class="hy-set-left layui-show-lg-inline-block hy-bold">备用邮箱</div>
+                    <div class="hy-set-mid layui-show-lg-inline-block">您已绑定了邮箱 <span class="hy-desc-green">{$item.email}</span> [阿里云发送的各类系统、营销、服务通知将发送到您的备用邮箱]</div>
+                    <div class="hy-set-right layui-show-lg-inline-block">
+                        {if $item['email'] == ''}
+                        <span class="hy-green"><i class="layui-icon layui-icon-tips"></i> 未设置</span>
+                        {elseif $item['email'] != ''}
+                        <span class="hy-red"><i class="layui-icon layui-icon-ok-circle"></i> 已设置</span>
+                        {/if}
+                        <span>|</span> <a  class="hy-desc-blue" id="HY-companySafety-Email">修改</a></div>
+                </li>
+                <li class="hy-set-item">
+                    <div class="hy-set-left layui-show-lg-inline-block hy-bold">密保问题</div>
+                    <div class="hy-set-mid layui-show-lg-inline-block">建议您设置三个容易记住，且最不容易被他人获取的问题及答案，更有效保障您的密码安全。</div>
+                    <div class="hy-set-right layui-show-lg-inline-block">
+                        {if $item['is_real'] == 2}
+                        <span class="hy-green"><i class="layui-icon layui-icon-tips"></i> 未设置</span>
+                        {elseif $item['is_real'] != 1}
+                        <span class="hy-red"><i class="layui-icon layui-icon-ok-circle"></i> 已设置</span>
+                        {/if}
+                        <span>|</span> <a  class="hy-desc-blue" id="setPro">修改</a></div>
+                </li>
+                <li class="hy-set-item">
+                    <div class="hy-set-left layui-show-lg-inline-block hy-bold">注销账号</div>
+                    <div class="hy-set-mid layui-show-lg-inline-block">如果您不再使用此账号，可以将其注销。账号成功注销后，其下所有服务、数据及隐私信息将会被删除并将无法恢复。</div>
+                    <div class="hy-set-right layui-show-lg-inline-block"><span class="hy-red"><i class="layui-icon layui-icon-tips"></i> 已设置</span> <span>|</span> <a  class="hy-desc-blue" id="setDel">修改</a></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form;
+
+        //修改企业信息
+        $('#HY-companySafety-Email').click(function () {
+            var url = "{:url('admin/v1.Company/editCompanysafetyEmail')}?id={$item.id}";
+            wk.layer_show_url('绑定邮箱',url,500,260)
+        });
+        //修改联系人信息
+        $('#HY-companySafety-Phone').click(function () {
+            var url = "{:url('admin/v1.Company/editCompanysafetyPhone')}?id={$item.id}";
+            wk.layer_show_url('绑定手机',url,500,260)
+        });
+        //修改企业信息
+        $('#setPwd').click(function () {
+            var url = "{:url('admin/v1.User/setPassword')}?id={$item.id}";
+            wk.layer_show_url('绑定邮箱',url,500,420)
+        });
+
+    });
+</script>
+</body>
+</html>

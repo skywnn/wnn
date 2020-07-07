@@ -1,0 +1,70 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header layuiadmin-card-header-auto">
+                    企业实名信息认证
+                    <a class="layui-a-tips" id="HY-companyReal"><i class="fa fa-pencil"></i> 修改</a>
+                </div>
+                <div class="layui-card-body" pad15>
+                    <div class="layui-form" wid100 lay-filter="">
+                        <div class="layui-form-item hy-form-item-md8">
+                            <label class="layui-form-label">企业名称</label>
+                            <div class="layui-input-inline">
+                                <div class="layui-form-mid layui-word-aux">{$company.title}</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item hy-form-item-md8">
+                            <label class="layui-form-label">企业法人</label>
+                            <div class="layui-input-inline hy-form-title">
+                                <div class="layui-form-mid layui-word-aux">{$company.faren}</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item hy-form-item-md8">
+                            <label class="layui-form-label">统一信用码</label>
+                            <div class="layui-input-inline">
+                                <div class="layui-form-mid layui-word-aux">{$company.xinyongma}</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item hy-form-item-md8">
+                            <label class="layui-form-label">注册地址</label>
+                            <div class="layui-input-inline">
+                                <div class="layui-form-mid layui-word-aux">{$company.reg_address}</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item hy-form-item-md8">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">营业期限</label>
+                                <div class="layui-input-inline" style="width: 100px;">
+                                    <div class="layui-form-mid layui-word-aux">{$company.time_start}</div>
+                                </div>
+                                <div class="layui-form-mid">-</div>
+                                <div class="layui-input-inline" style="width: 100px;">
+                                    <div class="layui-form-mid layui-word-aux">{$company.time_end}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form;
+
+        //修改企业信息
+        $('#HY-companyReal').click(function () {
+            var url = "{:url('admin/v1.Company/editCompanyReal')}?id={$company.id}";
+            wk.href(url);
+        });
+    });
+</script>
+</body>
+</html>

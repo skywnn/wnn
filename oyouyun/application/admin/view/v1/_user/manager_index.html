@@ -1,0 +1,131 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        关键字
+                    </div>
+                    <div class="layui-inline" style="width: 300px">
+                        <input type="text" id="key" name="keyword" value="" lay-verify="title" autocomplete="off" placeholder="请输入用户昵称" class="layui-input"/>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit="" lay-filter="LAY-search">
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                        <button type="reset" class="layui-btn layui-btn-danger" id="empty"  lay-submit="" lay-filter="LAY-search">
+                            <i class="layui-icon layui-icon-refresh layuiadmin-button-btn"></i>
+                        </button>
+                    </div>
+                    <div class="layui-inline layui-layout-right" id="hy-listTop-right" style="padding-right: 10px; padding-top: 15px;">
+                        <button class="layui-btn" id="HY-listTop-add" lay-event="add">
+                            <i class="fa fa-plus"></i> 添加管理员
+                        </button>
+                        <button class="layui-btn" id="hy-listTop-statistic" lay-event="statistic">
+                            <i class="fa fa-history"></i> 操作日志
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <!--表格-->
+            <table id="LAY-table-manage" lay-filter="LAY-table-manage"></table>
+            <!--图片模板-->
+            <script type="text/html" id="HY-imgTpl">
+                <img src="{{d.icon}}" class="layui-table-img layui-circle" onerror="this.src='__STATIC__/admin/images/base/head_default.gif'" style="width: 28px" />
+            </script>
+            <!--时间格式模板-->
+            <script type="text/html" id="HY-date">
+                <div>{{ layui.util.toDateString(d.login_time * 1000,"MM-dd HH:mm") }}</div>
+            </script>
+            <!--状态模板-->
+            <script type="text/html" id="HY-staBar">
+                <input type="checkbox" name="switch" value="{{d.id}}"  lay-skin="switch"  lay-text="ON|OFF" lay-filter="OnOff"{{ d.role_status == 1 ? 'checked' : '' }} >
+            </script>
+            <!--操作模板-->
+            <script type="text/html" id="HY-table-toolbar">
+                <a class="layui-btn layui-btn-xs" title="重置" lay-event="reset"><i class="layui-icon layui-icon-edit"></i> 重置</a>
+                <a class="layui-btn layui-btn-xs" title="通知" lay-event="setMessage"><i class="layui-icon layui-icon-dialogue"></i> 通知</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" title="撤销" lay-event="del"><i class="layui-icon layui-icon-delete"></i> 撤销</a>
+            </script>
+        </div>
+        <div class="container-fluid">
+            <p style="text-align: center;line-height: 30px; padding-bottom: 20px;">填写表单时注意填写项的具体要求，上传图片时注意图片格式与大小的限制<br/>
+                内部资料，严禁外泄，公司对平台数据信息保留责任追溯的权利。</p>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','table'], function () {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form
+            ,table = layui.table;
+        table.render({
+            elem: '#LAY-table-manage'
+            ,url: "{:url('admin/v1.User/managerIndex')}"
+            ,response: {
+                statusCode: 220 //成功的状态码，默认：0
+            }
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers', title: '序号', width: 60}
+                ,{field: 'icon', title: '头像', width: 90, align: 'center', templet: '#HY-imgTpl'}
+                ,{field: 'nick_name', title: '真实姓名',minWidth: 120}
+                ,{field: 'role_name', title: '身份类型', width: 150}
+                ,{field: 'phone', title: '手机号', align: 'center', width: 120}
+                ,{field: 'spread_num', title: '累计直推', align: 'center', width: 100}
+                ,{field: 'login_time', title: '登录时间', align: 'center', width: 120, sort: true, templet: '#HY-date'}
+                ,{field: 'login_num', title: '登录次数', align: 'center', width: 100}
+                ,{field: 'role_status',fixed: 'right', width: 90, title: '状态', align: 'center', templet: '#HY-staBar'}
+                ,{title: '操作', width: 300, align: 'center', fixed: 'right', toolbar: '#HY-table-toolbar'}
+            ]]
+            ,page: true
+            ,limits: [10, 15]
+            ,limit: 10
+            ,text: {
+                none: '对不起，暂无相关数据' //默认：无数据
+            }
+        });
+
+        //添加按钮
+        $('#HY-listTop-add').click(function () {
+            var url = "{:url('admin/v1.User/addManager')}";
+            wk.layer_show_url('添加管理员',url,500,430)
+        });
+
+        //监听状态开关操作
+        form.on('switch(OnOff)', function (obj) {
+            var num = '';
+            obj.elem.checked == true? num = 1: num = 2;
+            //数据状态
+            wk.status(this.value,num, '{:url(\'admin/v1.User/adminState\')}',obj);
+        });
+
+        //监听表格右侧工具条
+        table.on('tool(LAY-table-manage)', function(obj){
+            var data = obj.data;
+            switch(obj.event){
+                case 'setMessage':  //点对点发信息
+                    var url ="{:url('admin/v1.User/setMessage')}?id="+data.id;
+                    wk.layer_show_url('发送消息',url,750,410);
+                    break;
+                case 'reset': //重置身份
+                    var url ="{:url('admin/v1.User/resetManager')}?id="+data.id;
+                    wk.layer_show_url('修改管理员身份',url,500,240);
+                    break;
+                case 'del':  //身份撤销
+                    var id = data.id;
+                    url = "{:url('admin/v1.User/delManager')}?id="+data.id;
+                    msg = '确定撤销管理员身份么';
+                    wk.confirm(id,url,msg);
+            }
+        });
+    });
+</script>
+</body>
+</html>

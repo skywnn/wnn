@@ -1,0 +1,92 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-form">
+                <input type="hidden" name="operate_id" value="{:session('user_id')}">
+                <input type="hidden" name="id" value="{$item.id}">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">商品类型</label>
+                    <div class="layui-input-inline">
+                        <select name="type" lay-verify="">
+                            <option value="1" {eq name="item['type']" value="1"}selected{/eq}>平台运营</option>
+                            <option value="2" {eq name="item['type']" value="2"}selected{/eq}>商家运营</option>
+                        </select>
+                        <div class="layui-form-mid layui-word-aux"><span class="hy-form-star">*</span>&nbsp选择正确的商品类型</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">菜单名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="name" value="{$item.name}" lay-verify="required" autocomplete="off" placeholder="请输入菜单名称" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">链接地址</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="link" value="{$item.link}" lay-verify="required" autocomplete="off" placeholder="请输入链接地址" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">菜单状态</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="is_open" value="0" title="闭合" {eq name="item['is_open']" value="0"}checked{/eq}>
+                        <input type="radio" name="is_open" value="1" title="展开" {eq name="item['is_open']" value="1"}checked{/eq}>
+                    </div>
+                </div>
+                <div class="layui-form-item hy-form-item-md2">
+                    <label class="layui-form-label">设置排序</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="sort" value="{$item.sort}"  lay-verify="sort" autocomplete="off" placeholder="请输入序号" class="layui-input">
+                        <div class="layui-form-mid layui-word-aux">设置排列顺序</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="set-form-element">
+                            <i class="layui-icon layui-icon-ok"></i> 提交
+                        </button>
+                        <button class="layui-btn layui-btn-primary" id="close">
+                            <i class="layui-icon layui-icon-close"></i> 取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+
+    layui.use(['layer','form'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form;
+
+        form.on('submit(set-form-element)', function (data) {
+            $('.layui-btn').addClass('layui-disabled').attr('disabled','disabled');
+            $.ajax({
+                url:"{:url('admin/v1.Menu/editMenu')}",
+                type:'post',
+                dataType:'json',
+                data:data.field,
+                success:function(res){
+                    if (res.code == 200) {
+                        wk.success(res.msg,'wk.layer_close()');
+                        parent.location.reload();
+                    } else {
+                        wk.error(res.msg,'$(".layui-btn").removeClass(\'layui-disabled\').removeAttr(\'disabled\')');
+                    }
+                }
+            })
+        });
+        //返回取消按钮
+        $('#close').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+    });
+</script>
+</body>
+</html>

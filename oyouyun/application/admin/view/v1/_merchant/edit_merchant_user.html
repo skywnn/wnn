@@ -1,0 +1,81 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid layui-col-md12">
+    <div class="layui-card">
+        <form class="layui-form">
+            <div class="layui-card-body">
+                <input type="hidden" name="operate_id" value="{:session('user_id')}">
+                <input type="hidden" name="company_id" value="{:session('company_id')}">
+                <input type="hidden" name="id" value="{$item.id}">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-inline hy-form-name">
+                        <div class="layui-form-mid layui-word-aux">{$item.nick_name}</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">真实姓名</label>
+                    <div class="layui-input-inline hy-form-name">
+                        <div class="layui-form-mid layui-word-aux"><span class="hy-form-star">*</span>{$item.real_name}</div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">员工身份</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="role_type" value="0" title="员工" {eq name="item['role_type']" value="0"}checked{/eq}>
+                        <input type="radio" name="role_type" value="1" title="运营" {eq name="item['role_type']" value="1"}checked{/eq}>
+                        <input type="radio" name="role_type" value="2" title="财务" {eq name="item['role_type']" value="2"}checked{/eq}>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="set-form-element">
+                            <i class="layui-icon layui-icon-ok"></i> 提交
+                        </button>
+                        <button class="layui-btn layui-btn-primary" id="close">
+                            <i class="layui-icon layui-icon-close"></i> 取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','element','upload','layedit'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,element = layui.element
+            ,upload = layui.upload
+            ,layedit = layui.layedit
+            ,form = layui.form;
+
+        form.on('submit(set-form-element)', function (data) {
+            $('.layui-btn').addClass('layui-disabled').attr('disabled','disabled');
+            $.ajax({
+                url: "{:url('admin/v1.Merchant/editMerchantUser')}",
+                type:'post',
+                dataType:'json',
+                data:data.field,
+                success:function(res){
+                    if (res.code == 200) {
+                        wk.success(res.msg,'wk.layer_close()');
+                        parent.location.reload();
+                    } else {
+                        wk.error(res.msg,'$(".layui-btn").removeClass(\'layui-disabled\').removeAttr(\'disabled\')');
+                    }
+                }
+            })
+        });
+        //返回取消按钮
+        $('#close').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+
+    });
+</script>
+</body>
+</html>

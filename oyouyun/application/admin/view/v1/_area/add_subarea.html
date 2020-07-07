@@ -1,0 +1,80 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-form">
+                <input type="hidden" name="operate_id" value="{:session('user_id')}">
+                <input type="hidden" name="company_id" value="{:session('company_id')}">
+                <input type="hidden" name="parent_id" value="{$item.id}">
+                <input type="hidden" name="level" value="{$item.level}">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">区域名称</label>
+                    <div class="layui-input-inline" style="width: 220px">
+                        <input type="text" name="name" value="" lay-verify="required" autocomplete="off" placeholder="请输入区域名称" class="layui-input">
+                        {switch item.level }
+                        {case 2 }<span class="hy-form-star">*</span>&nbsp此处区域为<span class="hy-red">【地级市/自治州】</span>{/case}
+                        {case 3}<span class="hy-form-star">*</span>&nbsp此处区域为<span class="hy-red">【县/县级市/区】</span>{/case}
+                        {default /}<span class="hy-form-star">*</span>&nbsp此处区域为<span class="hy-red">【省/直辖市/自治区】</span>
+                        {/switch}
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">区域状态</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="status" value="0" title="启用" checked>
+                        <input type="radio" name="status" value="1" title="禁用">
+                    </div>
+                </div>
+                <div class="layui-form-item hy-form-item-md2">
+                    <label class="layui-form-label">设置排序</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="sort" value=""  lay-verify="sort" autocomplete="off" placeholder="请输入序号" class="layui-input">
+                        <div class="layui-form-mid layui-word-aux">设置排列顺序</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="set-form-element">
+                            <i class="layui-icon layui-icon-ok"></i> 提交
+                        </button>
+                        <button class="layui-btn layui-btn-primary" id="close">
+                            <i class="layui-icon layui-icon-close"></i> 取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form;
+        form.on('submit(set-form-element)', function (data) {
+            $('.layui-btn').addClass('layui-disabled').attr('disabled','disabled');
+            $.ajax({
+                url:"{:url('admin/v1.Area/addSubArea')}",
+                type:'post',
+                dataType:'json',
+                data:data.field,
+                success:function(res){
+                    if (res.code == 200) {
+                        wk.success(res.msg,'wk.layer_close()');
+                    } else {
+                        wk.error(res.msg,'$(".layui-btn").removeClass(\'layui-disabled\').removeAttr(\'disabled\')');
+                    }
+                }
+            })
+        });
+        //返回取消按钮
+        $('#close').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+    });
+</script>
+</body>
+</html>

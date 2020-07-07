@@ -1,0 +1,286 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md8">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    缴费记录
+                    <a class="layui-a-tips" id="HY-storeIndex-back"><i class="fa fa-pencil"></i>返回商户列表</a>
+                </div>
+                <div class="layui-card-body">
+                    <div class="layui-tab">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">房租</li>
+                            <li>电费</li>
+                            <li>停车费</li>
+                            <li>水费</li>
+                        </ul>
+                        <div class="layui-tab-content">
+                            <div class="layui-tab-item layui-show">
+                                <!--表格-->
+                                <table id="LAY-table-fang" lay-filter="LAY-table-fang"></table>
+                            </div>
+                            <div class="layui-tab-item">
+                                <!--表格-->
+                                <table id="LAY-table-dian" lay-filter="LAY-table-dian"></table>
+                            </div>
+                            <div class="layui-tab-item">
+                                <!--表格-->
+                                <table id="LAY-table-che" lay-filter="LAY-table-che"></table>
+                            </div>
+                            <div class="layui-tab-item">
+                                <!--表格-->
+                                <table id="LAY-table-shui" lay-filter="LAY-table-shui"></table>
+                                <!--语义化模板-->
+                                <script type="text/html" id="HY-dscTpl">
+                                    {{# if(d.status ==0){ }}<span class="hy-red">待缴</span>{{# } }}
+                                    {{# if(d.status ==1){ }}<span class="hy-green">已缴</span>{{# } }}
+                                    {{# if(d.status ==2){ }}<span class="hy-blue">确认中</span>{{# } }}
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-col-md4">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    承租信息
+                    <a class="layui-a-tips" id="HY-storeIndex-info"><i class="fa fa-pencil"></i> 信息配置</a>
+                </div>
+                <div class="layui-card-body layui-text">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="120">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <td>房间号</td>
+                            <td>{$merchantDate.room_num}</td>
+                        </tr>
+                        <tr>
+                            <td>承租单位</td>
+                            <td>{$merchantDate.title}</td>
+                        </tr>
+                        <tr>
+                            <td>证件号码</td>
+                            <td>{$merchantDate.xinyongma}</td>
+                        </tr>
+                        <tr>
+                            <td>公司法人</td>
+                            <td>{$merchantDate.faren}</td>
+                        </tr>
+                        <tr>
+                            <td>合同编号</td>
+                            <td>{$merchantDate.contract_num}</td>
+                        </tr>
+                        <tr>
+                            <td>签订日期</td>
+                            <td>{$merchantDate.contract_time}</td>
+                        </tr>
+                        <tr>
+                            <td>递增</td>
+                            <td>{$merchantDate.increase}</td>
+                        </tr>
+                        <tr>
+                            <td>租期</td>
+                            <td>{$merchantDate.lease_term}</td>
+                        </tr>
+                        <tr>
+                            <td>起租日期</td>
+                            <td>{$merchantDate.start_time}</td>
+                        </tr>
+                        <tr>
+                            <td>结束日期</td>
+                            <td>{$merchantDate.end_time}</td>
+                        </tr>
+                        <tr>
+                            <td>是否含税</td>
+                            <td>{$merchantDate.is_shui}</td>
+                        </tr>
+                        <tr>
+                            <td>租房面积</td>
+                            <td>{$merchantDate.area}</td>
+                        </tr>
+                        <tr>
+                            <td>联系人</td>
+                            <td>{$merchantDate.contact}</td>
+                        </tr>
+                        <tr>
+                            <td>联系电话</td>
+                            <td>{$merchantDate.phone}</td>
+                        </tr>
+                        <tr>
+                            <td>车辆</td>
+                            <td>{$merchantDate.car}</td>
+                        </tr>
+                        <tr>
+                            <td>固定资产</td>
+                            <td>{$merchantDate.fixed_assets}</td>
+                        </tr>
+                        <tr>
+                            <td>是否注册</td>
+                            <td>{$merchantDate.is_zhuce}</td>
+                        </tr>
+                        <tr>
+                            <td>宽带情况</td>
+                            <td>{$merchantDate.is_inte}</td>
+                        </tr>
+                        <tr>
+                            <td>月租金</td>
+                            <td>{$merchantDate.monthly_rent}</td>
+                        </tr>
+                        <tr>
+                            <td>物业费</td>
+                            <td>{$merchantDate.property_fee}</td>
+                        </tr>
+                        <tr>
+                            <td>押金</td>
+                            <td>{$merchantDate.deposit}</td>
+                        </tr>
+                        <tr>
+                            <td>备注</td>
+                            <td>{$merchantDate.remark}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--<div class="layui-card">-->
+                <!--<div class="layui-card-header">营销策略</div>-->
+                <!--<div class="layui-card-body">-->
+                    <!--<div class="layui-carousel layadmin-carousel layadmin-news" data-autoplay="true" data-anim="fade" lay-filter="news">-->
+                        <!--<div carousel-item>-->
+                            <!--<div><a href="#" target="_blank" class="layui-bg-red">layuiAdmin 快速上手文档</a></div>-->
+                            <!--<div><a href="#" target="_blank" class="layui-bg-green">layuiAdmin 会员讨论专区</a></div>-->
+                            <!--<div><a href="#" target="_blank" class="layui-bg-blue">获得 layui 官方后台模板系统</a></div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','table'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form
+            ,table = layui.table;
+        table.render({
+            elem: '#LAY-table-fang'
+            ,url: "{:url('admin/v1.Merchant/paymentFang')}?id={$merchantDate.id}"
+            ,response: {
+                statusCode: 220 //成功的状态码，默认：0
+            }
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers', title: '序号', width: 60}
+                ,{field: 'title', title: '缴费单名称', minwidth: 200}
+                ,{field: 'start_time', title: '开始时间', width: 160, sort: true}
+                ,{field: 'end_time', title: '结束时间', width: 160, sort: true}
+                ,{field: 'cost', title: '本次费用', width: 100}
+                ,{field: 'create_time', title: '创建时间', width: 160, sort: true}
+                ,{field: 'status', fixed: 'right', width: 90, title: '状态', align: 'center', templet: '#HY-dscTpl'}
+            ]]
+            ,page: true
+            ,limits: [10, 15]
+            ,limit: 10
+            ,text: {
+                none: '对不起，暂无相关数据' //默认：无数据
+            }
+        });
+        table.render({
+            elem: '#LAY-table-dian'
+            ,url: "{:url('admin/v1.Merchant/paymentDian')}?id={$merchantDate.id}"
+            ,response: {
+                statusCode: 220 //成功的状态码，默认：0
+            }
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers', title: '序号', width: 60}
+                ,{field: 'title', title: '缴费单名称', minwidth: 200}
+                ,{field: 'lto_dian', title: '上次抄表', width: 160, sort: true}
+                ,{field: 'leo_dian', title: '本次抄表', width: 160, sort: true}
+                ,{field: 'cost', title: '本次费用', width: 100}
+                ,{field: 'create_time', title: '创建时间', width: 160, sort: true}
+                ,{field: 'status', fixed: 'right', width: 90, title: '状态', align: 'center', templet: '#HY-dscTpl'}
+            ]]
+            ,page: true
+            ,limits: [10, 15]
+            ,limit: 10
+            ,text: {
+                none: '对不起，暂无相关数据' //默认：无数据
+            }
+        });
+        table.render({
+            elem: '#LAY-table-che'
+            ,url: "{:url('admin/v1.Merchant/paymentChe')}?id={$merchantDate.id}"
+            ,response: {
+                statusCode: 220 //成功的状态码，默认：0
+            }
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers', title: '序号', width: 60}
+                ,{field: 'title', title: '缴费单名称', minwidth: 200}
+                ,{field: 'start_time', title: '开始时间', width: 160, sort: true}
+                ,{field: 'end_time', title: '结束时间', width: 160, sort: true}
+                ,{field: 'cost', title: '本次费用', width: 100}
+                ,{field: 'create_time', title: '创建时间', width: 160, sort: true}
+                ,{field: 'status', fixed: 'right', width: 90, title: '状态', align: 'center', templet: '#HY-dscTpl'}
+            ]]
+            ,page: true
+            ,limits: [10, 15]
+            ,limit: 10
+            ,text: {
+                none: '对不起，暂无相关数据' //默认：无数据
+            }
+        });
+        table.render({
+            elem: '#LAY-table-shui'
+            ,url: "{:url('admin/v1.Merchant/paymentShui')}?id={$merchantDate.id}"
+            ,response: {
+                statusCode: 220 //成功的状态码，默认：0
+            }
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers', title: '序号', width: 60}
+                ,{field: 'title', title: '缴费单名称', minwidth: 200}
+                ,{field: 'lto_dian', title: '上次抄表', width: 160, sort: true}
+                ,{field: 'leo_dian', title: '本次抄表', width: 160, sort: true}
+                ,{field: 'cost', title: '本次费用', width: 100}
+                ,{field: 'create_time', title: '创建时间', width: 160, sort: true}
+                ,{field: 'status', fixed: 'right', width: 90, title: '状态', align: 'center', templet: '#HY-dscTpl'}
+            ]]
+            ,page: true
+            ,limits: [10, 15]
+            ,limit: 10
+            ,text: {
+                none: '对不起，暂无相关数据' //默认：无数据
+            }
+        });
+        $('#HY-storeIndex-back').click(function () {
+            var url = "{:url('admin/v1.Merchant/merchantIndex')}";
+            wk.href(url);
+        });
+        //微店信息配置
+        $('#HY-storeIndex-info').click(function () {
+            var url = "{:url('admin/v1.Merchant/editMerchant')}?id={$merchantDate.id}";
+            wk.layer_show_url('修改企业信息',url,750,600)
+        });
+
+        //返回取消按钮
+        $('#close').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-header layuiadmin-card-header-auto">
+            接口权限
+        </div>
+        <div class="layui-card-body">
+            <!--表格-->
+            <table id="LAY-table-manage" lay-filter="LAY-table-manage"></table>
+            <!--图片模板-->
+            <script type="text/html" id="HY-imgTpl">
+                <img src="__STATIC__{{d.icon}}" class="layui-table-img" onerror="this.src='__STATIC__/admin/images/head_default.gif'" style="height: 28px" />
+            </script>
+            <!--状态模板-->
+            <script type="text/html" id="HY-staBar">
+                <input type="checkbox" value="{{d.id}}"  lay-skin="switch"  lay-text="ON|OFF" lay-filter="OnOff"{{ d.status == 1 ? 'checked' : '' }} >
+            </script>
+            <!--操作模板-->
+            <script type="text/html" id="HY-table-toolbar">
+                <a class="layui-btn layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i> 编辑</a>
+                <a class="layui-btn layui-btn-xs" lay-event="icon"><i class="fa fa-picture-o"></i> 分类图标</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="fa fa-trash-o"></i> 删除</a>
+            </script>
+        </div>
+        <div class="container-fluid">
+            <p style="text-align: center;line-height: 30px; padding-bottom: 20px;">填写表单时注意填写项的具体要求，上传图片时注意图片格式与大小的限制<br/>
+                内部资料，严禁外泄，公司对平台数据信息保留责任追溯的权利。</p>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','table'], function () {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form
+            ,table = layui.table;
+        table.render({
+            elem: '#LAY-table-manage'
+            ,url: "{:url('admin/v1.Product/cateIndex')}"
+            ,response: {
+                statusCode: 220 //成功的状态码，默认：0
+            }
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers', width: 60, title: '序号'}
+                ,{field: 'name', title: '类目'}
+                ,{field: 'name', title: '功能'}
+                ,{field: 'name', title: '接口'}
+                ,{field: 'name', title: '每日实时调用量/上限(次)'}
+                ,{field: 'status',fixed: 'right', width: 90, title: '状态', align: 'center', templet: '#HY-staBar'}
+                ,{title: '操作', width: 200, align: 'center', fixed: 'right', toolbar: '#HY-table-toolbar'}
+            ]]
+            ,page: true
+            ,limits: [10, 15]
+            ,limit: 10
+            ,text: {
+                none: '对不起，暂无相关数据' //默认：无数据
+            }
+        });
+
+        //修改企业信息
+        $('#HY-companyInfo-bases').click(function () {
+            var url = "{:url('admin/v1.Company/editCompanyBase')}?id={$item.id}";
+            wk.layer_show_url('修改企业信息',url,600,470)
+        });
+        //修改联系人信息
+        $('#HY-companyInfo-contacts').click(function () {
+            var url = "{:url('admin/v1.Company/editCompanyContacts')}?id={$item.id}";
+            wk.layer_show_url('修改联系人信息',url,500,310)
+        });
+        //监听表格右侧工具条
+        table.on('tool(LAY-table-manage)', function(obj){
+            var data = obj.data;
+            switch(obj.event){
+
+                case 'edit': //修改编辑
+                    var url ="{:url('admin/v1.Product/editCate')}?id="+data.id;
+                    wk.layer_show_url('修改服务分类',url,500,200);
+                    break;
+                case 'icon': //分类图标
+                    var url ="{:url('admin/v1.Product/cateIcon')}?id="+data.id;
+                    wk.layer_show_url('上传分类图标',url,500,360);
+                    break;
+                case 'del':  //单条删除
+                    var id = data.id;
+                    url = "{:url('admin/v1.Product/delCate')}?id="+data.id;
+                    msg = '确定删除此分类么';
+                    wk.confirm(id,url,msg);
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid layui-col-md12">
+    <div class="layui-card">
+        <form class="layui-form">
+            <div class="layui-card-body">
+                <input type="hidden" name="operate_id" value="{:session('user_id')}">
+                <input type="hidden" name="company_id" value="{:session('company_id')}">
+                <input type="hidden" name="merchant_id" value="{$item.id}">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">缴费商户</label>
+                        <div class="layui-input-inline hy-form-name">
+                            <div class="layui-form-mid layui-word-aux">{$item.title}</div>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">缴费类目</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="cate_name"  lay-verify="required" value="停车费" disabled autocomplete="off" placeholder="￥" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item hy-form-item-md8">
+                    <label class="layui-form-label">缴费单名称</label>
+                    <div class="layui-input-inline hy-form-name">
+                        <input type="text" name="title"  lay-verify="required" value="" autocomplete="off" placeholder="请注明缴费单月份" class="layui-input">
+                        <div class="layui-form-mid layui-word-aux"><span class="hy-form-star">*</span>&nbsp必填项</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">时间区间</label>
+                        <div class="layui-input-inline" style="width: 160px;">
+                            <input type="text" name="start_time" value="{$item.start_time}" placeholder="起始时间" onclick="wk.lay_date_time(this);" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid">-</div>
+                        <div class="layui-input-inline" style="width: 160px;">
+                            <input type="text" name="end_time" placeholder="截止时间" onclick="wk.lay_date_time(this);" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">月单价</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="unit_price" value="" class="layui-input" id="monthd" lay-verify="required" autocomplete="off" placeholder="月单价">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">数量</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="number"  lay-verify="required" value="" id="num" autocomplete="off" placeholder="请输入数量" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">小计金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="cost"  lay-verify="required" value="" id="subtotal" autocomplete="off" placeholder="￥" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">提醒时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="remind_time" value="" class="layui-input" lay-verify="required" autocomplete="off" onclick="wk.lay_date(this);" placeholder="提醒时间">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="set-form-element">
+                            <i class="layui-icon layui-icon-ok"></i> 提交
+                        </button>
+                        <button class="layui-btn layui-btn-primary" id="close">
+                            <i class="layui-icon layui-icon-close"></i> 取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','element','upload','layedit','laydate'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,element = layui.element
+            ,upload = layui.upload
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate
+            ,form = layui.form;
+  let monthd=0;
+
+            //月单价
+             $("#monthd").blur(function(){
+              var _this = $(this);
+              monthd=_this.val();
+             console.log("月单价:"+monthd);
+             console.log("月单价:"+$("#monthd").val());
+             console.log("数量:"+ $("#num").val());
+
+             if($("#monthd").val()!=0&&$("#num").val()!=0&&$("#num").val()!=''){
+                   let cha=parseFloat($("#monthd").val())*parseFloat( $("#num").val())
+                   $("#subtotal").val(cha.toFixed(2))
+                   console.log(cha);
+               }else if($("#monthd").val()!=0&&$("#num").val()==''){
+
+                    $("#subtotal").val("0")
+               }
+               else{
+                  $("#subtotal").val("0")
+               }
+            });
+             //数量
+        $("#num").blur(function(){
+            var _this = $(this);
+             let  num=_this.val();
+              console.log("月单价"+monthd);
+               console.log("数量"+num);
+               if(monthd!=0||num!=0){
+                   let cha=parseFloat(monthd)*parseFloat(num)
+                   $("#subtotal").val(cha.toFixed(2))
+                   console.log(cha);
+               }else{
+                  $("#subtotal").val("0")
+               }
+           if($("#monthd").val()!=0||$("#num").val()!=0){
+                   let cha=parseFloat($("#monthd").val())*parseFloat( $("#num").val())
+                   $("#subtotal").val(cha.toFixed(2))
+                   console.log(cha);
+               }else{
+                  $("#subtotal").val("0")
+               }
+            });
+        form.on('submit(set-form-element)', function (data) {
+            $('.layui-btn').addClass('layui-disabled').attr('disabled','disabled');
+            $.ajax({
+                url: "{:url('admin/v1.Merchant/setPaymentChe')}",
+                type:'post',
+                dataType:'json',
+                data:data.field,
+                success:function(res){
+                    if (res.code == 200) {
+                        wk.success(res.msg,'wk.layer_close()');
+                        parent.location.reload();
+                    } else {
+                        wk.error(res.msg,'$(".layui-btn").removeClass(\'layui-disabled\').removeAttr(\'disabled\')');
+                    }
+                }
+            })
+        });
+        //返回取消按钮
+        $('#close').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<script src="__STATIC__/admin/js/jquery.min.js"></script>
+<script src="__STATIC__/layuiadmin/layui/layui.js"></script>
+<script src="__STATIC__/admin/js/wk.js"></script>
+<script>
+    layui.config({
+        base: '__STATIC__/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use('index');
+</script>
+<script>
+    //layui公共操作
+    layui.use(['form','table'], function() {
+        var form = layui.form
+            ,table = layui.table;
+
+        //监听搜索
+        form.on('submit(LAY-search)', function(data){
+            var field = data.field;
+            //执行重载
+            table.reload('LAY-table-manage', {
+                where: field
+            });
+        });
+        //重置搜索框
+        $('#empty').on('click', function () {
+            $('.layui-input').val('');
+            $('select').each(function (i, j) {
+                $(j).find("option:selected").attr("selected", false);
+                form.render('select')
+            })
+        });
+        //表格排序
+        table.on('sort(LAY-table-manage)', function(obj){
+            table.reload('LAY-table', {
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态
+                ,where: { //请求参数
+                    field: obj.field //排序字段
+                    ,order: obj.type //排序方式
+                }
+            });
+        });
+        //地区三级联动
+        form.on('select(province)', function(data){
+            getArea("province",data.value);
+        });
+        form.on('select(city)', function(data){
+            getArea("city",data.value);
+        });
+        function getArea(type,id){
+            $.ajax({
+                url:"{:url('admin/Base/place')}",
+                dataType:"json",
+                data:'id='+id,
+                type:'post',
+                success:function(res){
+                    var opt = null;
+                    $.each(res.msg,function(key,vo){
+                        opt = opt+"<option value="+vo.id+">"+vo.name+"</option>";
+                    })
+                    if(type=="province"){
+                        $("#city").empty();
+                        $("#city").append('<option value="">---- 请选择市 ----</option>');
+                        $("#district").empty();
+                        $("#district").append('<option value="">---- 请选择区 ----</option>');
+                        $("#city").append(opt);
+                    }else if(type == "city"){
+                        $("#district").empty();
+                        $("#district").append('<option value="">---- 请选择区 ----</option>');
+                        $("#district").append(opt);
+                    }
+                    form.render('select');
+                }
+            })
+        }
+    });
+</script>
