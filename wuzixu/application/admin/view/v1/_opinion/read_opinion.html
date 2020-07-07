@@ -1,0 +1,58 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-form">
+                <input type="hidden" name="operate_id" value="{:session('user_id')}">
+                <input type="hidden" name="id" value="{$item.id}">
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">投诉建议</label>
+                    <div class="layui-input-block">
+                        <textarea name="content"  placeholder="请输入角色描述" disabled class="layui-textarea">{$item.content}</textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn layui-btn-primary" id="close">
+                            <i class="layui-icon layui-icon-close"></i> 取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form;
+
+        form.on('submit(set-form-element)', function (data) {
+            $('.layui-btn').addClass('layui-disabled').attr('disabled','disabled');
+            $.ajax({
+                url:"{:url('admin/v1.Suggest/readSuggest')}",
+                type:'post',
+                dataType:'json',
+                data:data.field,
+                success:function(res){
+                    if (res.code == 200) {
+                        wk.success(res.msg,'wk.layer_close()');
+                        parent.location.reload();
+                    } else {
+                        wk.error(res.msg,'$(".layui-btn").removeClass(\'layui-disabled\').removeAttr(\'disabled\')');
+                    }
+                }
+            })
+        });
+        //返回取消按钮
+        $('#close').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+    });
+</script>
+</body>
+</html>

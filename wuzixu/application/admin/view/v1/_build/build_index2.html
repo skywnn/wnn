@@ -1,0 +1,105 @@
+{include file="common/header"}
+<body>
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-header layui-form layuiadmin-card-header-auto">
+                <!--列表页头部-->
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <button class="layui-btn" lay-filter="LAY-search">
+                                <i class="fa fa-undo" onclick="function f(){history.go(-1)}">返回</i>
+                            </button>
+                            <button  class="layui-btn layui-btn-danger" id="empty"  lay-submit="" lay-filter="LAY-search">
+                                <i class="layui-icon layui-icon-refresh layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="layui-inline layui-layout-right" id="HY-listTop-right" style="padding-right: 10px; padding-top: 15px;">
+                        <button class="layui-btn" id="HY-listTop-add" lay-event="add">
+                            <i class="fa fa-plus layuiadmin-button-btn"></i> 添加新内容
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="tree" class="demo-tree-box"></div>
+            <div class="container-fluid">
+                <p style="text-align: center;line-height: 30px; padding-bottom: 20px;">填写表单时注意填写项的具体要求，上传图片时注意图片格式与大小的限制<br/>
+                    内部资料，严禁外泄，公司对平台数据信息保留责任追溯的权利。</p>
+            </div>
+        </div>
+    </div>
+    {include file="common/footer"}
+    <script>
+        layui.use(['tree','util','layer'],function(){
+            var $ = layui.jquery
+                ,layer = layui.layer
+                ,tree = layui.tree
+                ,util = layui.util
+            //开启节点操作图标
+
+            //添加按钮
+            $('#HY-listTop-add').click(function () {
+                var url = "{:url('admin/v1.Build/addBuild')}?parent_id=0&organize_id={$id}";
+                wk.href(url);
+            });
+
+
+            $.ajax({
+                type: "get",
+                url: "{:url('admin/v1.Build/buildIndex2')}?id={$id}",
+                dataType: 'json',
+                async: true,//是否异步请求
+                success: function (data) {
+                    tree.render({
+                        elem: '#tree',  //绑定元素
+                        data: data,
+                        edit:['add','del'],
+                        click:function (obj) {
+                            var url = "{:url('admin/v1.Build/editBuild')}?id="+obj.data.id;
+                            wk.href(url);
+                        },
+                        operate: function(obj){
+                            var type = obj.type; //得到操作类型：add、edit、del
+                            var data = obj.data; //得到当前节点的数据
+                            var elem = obj.elem; //得到当前节点元素
+
+                            //Ajax 操作
+                            var id = data.id; //得到节点索引
+                            if(type === 'add'){ //增加节点
+                                var url = "{:url('admin/v1.Build/addBuild')}?parent_id="+data.id+'&organize_id={$id}';
+                                wk.href(url);
+                                return false;
+                            }  else if(type === 'del'){ //删除节点
+                                var id = data.id;
+                                var url = "{:url('admin/v1.Build/delBuild')}?id="+id;
+                                $.ajax({
+                                    url: url,
+                                    type: "post",
+                                    dataType: "json",
+                                    data: "id=" + id,
+                                    success: function (res) {
+                                        if(res.code == 200){
+                                            layer.msg(res.msg,{icon:1,time:1500,shade: 0.1},function(){
+                                                //重载当前页表格
+                                                if(type == 1){
+                                                    window.location.href= res.url;
+                                                } else {
+                                                    $(".layui-laypage-btn").click();
+                                                }
+
+                                            });
+                                        } else if (res.code == 100){
+                                            layer.msg(res.msg,{icon:2,time:1500,shade: 0.1});
+                                        }
+                                    }
+                                });
+                            };
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+</body>
+</html>

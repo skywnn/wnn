@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<?php
+    use app\home\model\WebMenuModel;
+    $item = [];
+    $webMenu = new WebMenuModel();
+    $map[] = ['pid','=',0];
+    $menuRes = $webMenu->getAllWebMenu($map);
+    foreach ($menuRes as $menu) {
+    $m = $webMenu->getAllWebMenu(array('pid'=>$menu['id']));
+    $menu['child'] = $m;
+    array_push($item,$menu);
+    }
+?>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>中华伍子胥的研究中心</title>
+    <link rel="stylesheet" href="__STATIC__/header/css/ETUI3_002.css">
+    <link rel="stylesheet" href="__STATIC__/header/css/ETUI3.css">
+    <!-- Widget -->
+    <link rel="stylesheet" href="__STATIC__/header/css/owl_002.css">
+    <link rel="stylesheet" href="__STATIC__/header/css/owl.css">
+    <link rel="stylesheet" href="__STATIC__/header/css/animate.css">
+    <link rel="stylesheet" href="__STATIC__/header/css/keyframes.css">
+    <link rel="stylesheet" href="__STATIC__/header/css/datetimepicker.css">
+    <link rel="stylesheet" href="__STATIC__/header/css/jquery.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="__STATIC__/header/css/style.css">
+    <link rel="stylesheet" href="__STATIC__/header/css/style-compatible.css">
+    <link rel="stylesheet" href="__STATIC__/header/css/styles-responsive.css">
+</head>
+<body>
+<div id="header" class="header2" style="background-image:url(__STATIC__/header/img/伍子胥.jpg);background-size:100% 100%; ">
+    <div class="container">
+
+        <div class="navbar hidden-xs">
+
+            <div class="collapse navbar-collapse no-padding" id="mainNav">
+
+                <form class="navbar-form" action="https://search.sjtu.edu.cn/search-all/search/data" method="GET" target="_blank">
+                    <div class="form-group">
+                        <input class="form-control" type="text" id="keyword" name="keyword" placeholder="请输入关键字搜索上海交大所有网站内容...">
+                        <div class="addOn">
+                            <button role="button" type="submit">
+
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="navbar-header" style="margin-top:20px;">
+                    <h1 class="logo hidden-xs">
+                        <a class="navbar-brand" href="#">
+                            <span style="color:red">中华伍子胥</span>
+                        </a>
+                    </h1>
+                </div>
+
+<!--                <div class="navbar-top">-->
+<!--                    <ul class="nav navbar-nav">-->
+<!--                        <li><a href="https://www.sjtu.edu.cn/fk/index.html" target="_blank"><i class="iconfont icon-yonghu2"></i> 访客</a></li>-->
+<!--                        <li><a href="https://www.sjtu.edu.cn/xs/index.html" target="_blank"><i class="iconfont icon-xuesheng1"></i> 学生</a></li>-->
+<!--                        <li><a href="https://www.sjtu.edu.cn/js/index.html" target="_blank"><i class="iconfont icon-laoshicopy"></i> 教师</a></li>-->
+<!--                        <li><a href="https://www.sjtu.edu.cn/xy/index.html" target="_blank"><i class="iconfont icon-yonghuguanli"></i> 校友</a></li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+
+            </div>
+        </div>
+
+        <div class="navbar navbar-default navbar-main stickUp-Nav stuckMenu" role="navigation" style="position: relative; top: 0px; z-index: 99;">
+            <div id="mobile-navigation" class="phone-nav1220">
+                <ul class="nav navbar-nav middle-nav1220  clearfix">
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" totabtarget="269" retabtarget="270" retargeta="327">首页</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" totabtarget="269" retabtarget="270" retargeta="327">简介</a>
+                    </li>
+                    {volist name="item" id="vo"}
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" totabtarget="269" retabtarget="270" retargeta="327">{$vo.name}</a>
+                        <div class="dropdown-menu dropdown-menu01 clearfix" style="display: none;">
+                            <div class="dropdown-item clearfix">
+                                <ul class="dropdown-item-list">
+                                    {volist name="vo.child" id="vo1"}
+                                    <li class="col-sm-6"><a href="{:url($vo1.url)}{$vo1.parameter}" target="_blank" tabtarget="271" toretabtarget="327" retargeta="328">{$vo1.name}</a></li>
+                                    {/volist}
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    {/volist}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

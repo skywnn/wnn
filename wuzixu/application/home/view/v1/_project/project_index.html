@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html style="font-size: 99.1146px; overflow: hidden;" lang="en"><head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <title>{$oneMenu.name}</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/home/article/css/style.css">
+    <link rel="stylesheet" href="__STATIC__/home/article/css/homepx.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/home/article/css/navbar.css">
+    <script src="__STATIC__/home/article/js/hm.js"></script><script src="__STATIC__/home/article/js/jquery-3.js"></script>
+    <script src="__STATIC__/home/article/js/jquery-qrcode-0.js"></script>
+    <script src="__STATIC__/home/article/js/underscore-min.js"></script>
+    <script src="__STATIC__/home/article/js/jquery.js"></script>
+    <script src="__STATIC__/home/article/js/NavBar.js"></script>
+    <script type="text/javascript" src="__STATIC__/home/article/js/layer.js"></script><link rel="stylesheet" href="css/layer.css" id="layuicss-skinlayercss">
+</head>
+
+<body>
+<div id="common-nav-bar">
+
+</div>
+<script>
+    $(".zupu").on( "mouseenter",function () {
+        $(".zupuTabBox").show()
+    });
+    $(".zupu").on( "mouseleave",function () {
+        $(".zupuTabBox").hide()
+    })
+    $(".zupu1").on( "mouseenter",function () {
+        $(".zupuTabBox1").show()
+    });
+    $(".zupu1").on( "mouseleave",function () {
+        $(".zupuTabBox1").hide()
+    })
+    //搜索框事件
+    $("#common-nav-bar .search input").on('keyup', '', function (event) {
+        if (event.keyCode == 13) {
+            console.info(event.keyCode)
+            var value = $("#common-nav-bar .search input")[0].value;
+            var url = "https://www.zupu.cn/zp?keyword=" + value;
+            window.open(url);
+        }
+    });
+</script>
+
+</div>
+<div id="puku">
+    <div class="main">
+        <div class="select-conditions">
+            <div class="top-info">
+                <div class="result-num" style="margin-bottom: 14px">
+                    <span>{$oneMenu.name}</span>
+                </div>
+            </div>
+            <div class="seaech-box">
+                <label>
+                    <img src="__STATIC__/home/article/img/home_searchIcon.png">
+                    <input onkeydown="_onkeyup(event)" type="text" id="_keyword" class="search-text" placeholder="名称查找">
+                </label>
+                <span onclick="_search()" class="search-btn">搜索</span>
+            </div>
+        </div>
+        <div class="select-area">
+            <!-- 按地区选择 -->
+            <div class="area">
+                <div class="txt">伍氏文化渊源</div>
+                <ul class="area-list">
+                    {volist name='menuList' id='m'}
+                    <li>
+                        <div class="province"><a href="{:url($m.url)}{$m.parameter}">{$m.name}</a></div>
+                    </li>
+                    {/volist}
+                </ul>
+            </div>
+        </div>
+
+
+        <ul class="jiapuList">
+            {volist name='item' id='vo'}
+            <li style='background-image: url("__STATIC__/{$vo.pic}");background-size:220px 278px;'>
+                <!--  <a target="_blank" th:href="${(pu.url!=''&&pu.url!=null)?pu.url:#httpServletRequest.getScheme() + '://' + #httpServletRequest.getServerName() + ':' + #request.getServerPort()  + #request.getContextPath() +'/zp/'+pu.id}" > -->
+                <a target="_blank" href="{:url('home/v1.Activity/activityShow')}?id={$vo.id}">
+                    <div class="familyCover">
+                        <div class="familyCon">
+                            <!--  <div class="familyNum" th:text="${'卷'+pu.volume}">卷一</div>-->
+                            <div class="borderFirst" >
+                                <div class="borderDiv">
+                                    <div class="borderLT"><img src="__STATIC__/home/article/img/border2.png"></div>
+                                    <div class="borderLB"><img src="__STATIC__/home/article/img/border2.png">
+                                    </div>
+                                    <div class="familyName">{$vo.name}</div>
+                                    <div class="borderRT"><img src="__STATIC__/home/article/img/border2.png">
+                                    </div>
+                                    <div class="borderRB"><img src="__STATIC__/home/article/img/border2.png">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="contentWrap">
+                        <div class="m">
+                            <p class="bookName">{$vo.name}</p>
+                            <!--<p class="viewTimes"  th:text="${pu.views+'次'}">0</p>-->
+                        </div>
+                        <div class="info">
+                            <span class="addressBox">
+                                <img class="info_img" src="__STATIC__/home/article/img/puAddres.png" alt="">
+                                <span class="address addressSpan"></span>
+                            </span>
+
+                            <span class="author" title="《德州杨氏族谱》委员会">《德州杨氏族谱》委员会...</span>
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {/volist}
+        </ul>
+        <div class="page-count">
+            <div class="container">
+                <span class="span-other" onclick="_search(1)">首页</span>
+                {if $count+1<6}
+                {for start="1" end="$count+1" step="1" name="i"}
+                <span class="page-number {$i}" onclick="javascript:_search({$i})">{$i}</span>
+                {/for}
+                {else /}
+                {for start="1" end="$count+1" step="1" name="i"}
+                <span class="page-number {$i}" onclick="javascript:_search({$i})">{$i}</span>
+                {/for}
+                <span>......</span>
+                <span class="page-number {$i}" onclick="javascript:_search({$count})">{$count}</span>
+                {/if}
+                <span class="span-other" onclick="javascript:_search({$page}+1>={$count}?{$count}:{$page}+1)">下一页</span>
+                <span class="span-other" onclick="javascript:_search({$count})">尾页</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="floatR">
+    <span class="closeFr"></span>
+</div>
+<script>
+    $(document).ready(function () {
+        $(".tab a").attr("class", "");
+        $("#menu_zhpk").attr("class", "active");
+    });
+    $(".closeFr").click(function () {
+        $(".floatR").hide();
+    });
+    function resizeHtmlFontSize() {
+        // 根据浏览器可视区域计算比例
+        var browserWidthWithoutScrollBar = document.documentElement.clientWidth;
+        var scale = browserWidthWithoutScrollBar / 1920; // 1920设计稿宽度
+        document.getElementsByTagName('html')[0].style.fontSize = scale * 100 + 'px';
+
+        console.log('html:fontSize:', document.getElementsByTagName('html')[0].style.fontSize);
+    }
+
+    resizeHtmlFontSize();
+    window.onresize = function () {
+        resizeHtmlFontSize()
+    };
+
+    // 删除筛选条件
+
+    // 删除筛选条件
+    function delete_filter(id) {
+        $(id).text("");
+        $(".close_condition-btn1").hide()
+    }
+
+    function delete_filter1(id) {
+        $(id).text("");
+        $(".close_condition-btn2").hide()
+    }
+
+    function _onkeyup(event) {
+        if (event.keyCode == 13) {
+            _search()
+        }
+    }
+
+    if ($("#filter_spell").text() == '') {
+
+    } else {
+        $(".close_condition-btn1").show()
+    }
+    if ($("#filter_area").text() == '') {
+
+    } else {
+        $(".close_condition-btn2").show()
+    }
+    $(".page-count ."+{$page}+"").addClass('active');
+    // 搜索
+    function _search(page) {
+        var address = $("#filter_area").text(),
+            familyName = $("#filter_spell").text(),
+            keyword = $("#_keyword")[0].value;
+        if (!keyword == "") {
+            url = "?keyword=" + keyword + "&pid={$pid}";
+        } else {
+            url = "?pid={$pid}";
+        }
+        if (page) {
+            if ({$cateId}) {
+                url = "?page=" + page + "&pid={$pid}&cateId={$cateId}";
+            } else {
+                url = "?page=" + page + "&pid={$pid}";
+            }
+        }
+        location.href = encodeURI(url);
+    }
+
+</script>
+<script src="js/index.js"></script>
+</body>
+</html>

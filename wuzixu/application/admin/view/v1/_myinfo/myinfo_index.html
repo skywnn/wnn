@@ -1,0 +1,50 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-form layui-col-md12" wid100>
+            <div class="layui-card">
+                <div class="layui-card-header layuiadmin-card-header-auto">
+                    联系我们
+                    <a class="layui-a-tips" id="HY-companyInfo-contacts"><i class="fa fa-pencil"></i> 修改</a>
+                </div>
+                <div class="layui-card-body" pad15>
+                    <div class="layui-form-item hy-form-item-md8">
+                        <label class="layui-form-label">联系人</label>
+                        <div class="layui-input-inline">
+                            <div class="layui-form-mid layui-word-aux">{$my.name}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item hy-form-item-md8">
+                        <label class="layui-form-label">联系电话</label>
+                        <div class="layui-input-inline hy-form-name">
+                            <div class="layui-form-mid layui-word-aux">{$my.phone}</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">联系邮箱</label>
+                        <div class="layui-input-inline hy-form-name">
+                            <div class="layui-form-mid layui-word-aux">{$my.email}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form;
+        //修改联系人信息
+        $('#HY-companyInfo-contacts').click(function () {
+            var url = "{:url('admin/v1.Myinfo/editMyinfo')}?id={$my.id}";
+            wk.layer_show_url('修改联系人信息',url,500,310)
+        });
+    });
+</script>
+</body>
+</html>

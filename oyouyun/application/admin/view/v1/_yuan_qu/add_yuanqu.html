@@ -1,0 +1,98 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid layui-col-md12">
+    <div style="padding: 0px; background-color: #F2F2F2;">
+        <div class="layui-row layui-col-space16">
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header">新增园区</div>
+                    <div class="layui-card-body">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label"><span style="color: red;">* </span>园区名称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="name" lay-verify="required" value="" autocomplete="off" placeholder="请输入园区名称" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label"><span style="color: red;">* </span>园区地址</label>
+                                <select name="province" class="layui-select" lay-search="" id="province" lay-filter="province">
+                                    <option value="">---- 请选择省 ----</option>
+                                </select>
+                                <select name="city" class="layui-select" lay-search="" id="city" lay-filter="city">
+                                    <option value="">---- 请选择市 ----</option>
+                                </select>
+
+                                <select name="area" class="layui-select" lay-search="" id="district" lay-filter="district">
+                                    <option value="">---- 请选择区 ----</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">* </span>地址</label>
+                            <div class="layui-input-block">
+                                <textarea placeholder="请输入内容" class="layui-textarea"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label"><span style="color: red;">* </span>联系人</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="name" lay-verify="required" value="" autocomplete="off" placeholder="请输入园区名称" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label"><span style="color: red;">* </span>联系电话</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="address" lay-verify="required" value="" autocomplete="off" placeholder="请输入园区地址" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label"><span style="color: red;">* </span>占地面积</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="name" lay-verify="required" value="" autocomplete="off" placeholder="请输入园区名称" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label"><span style="color: red;">* </span>建筑面积</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="address" lay-verify="required" value="" autocomplete="off" placeholder="请输入园区地址" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label"><span style="color: red;">* </span>园区封面</label>
+                                <div class="layui-input-inline">
+                                    <div class="layui-upload-drag" id="test10">
+                                        <i class="layui-icon"></i>
+                                        <p>点击上传，或将文件拖拽到此处</p>
+                                        <div class="layui-hide" id="uploadDemoView">
+                                            <hr>
+                                            <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script type="text/javascript">
+    layui.use(['form', 'layedit', 'laydate'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate;
+    )}
+</script>
+</body>
+
+</html>

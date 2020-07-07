@@ -1,0 +1,121 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        关键字
+                    </div>
+                    <div class="layui-inline" style="width: 300px">
+                        <input type="text" id="key" name="keyword" value="" lay-verify="title" autocomplete="off" placeholder="请输入类型名称" class="layui-input"/>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit="" lay-filter="LAY-search">
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                        <button type="reset" class="layui-btn layui-btn-danger" id="empty"  lay-submit="" lay-filter="LAY-search">
+                            <i class="layui-icon layui-icon-refresh layuiadmin-button-btn"></i>
+                        </button>
+                    </div>
+                    <div class="layui-inline layui-layout-right" id="hy-listTop-right" style="padding-right: 10px; padding-top: 15px;">
+                        <button class="layui-btn" id="HY-listTop-add" lay-event="add">
+                            <i class="fa fa-plus"></i> 添加养生分类
+                        </button>
+                        <button class="layui-btn" id="HY-listTop-back">
+                            <i class="fa fa-undo"></i> 返回养生主页
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <!--表格-->
+            <table id="LAY-table-manage" lay-filter="LAY-table-manage"></table>
+            <!--图片模板-->
+            <script type="text/html" id="HY-imgTpl">
+                <img src="__STATIC__{{d.icon}}" class="layui-table-img" onerror="this.src='__STATIC__/admin/images/base/head_default.gif'" style="height: 28px" />
+            </script>
+            <!--状态模板-->
+            <script type="text/html" id="HY-staBar">
+                <input type="checkbox" value="{{d.id}}"  lay-skin="switch"  lay-text="ON|OFF" lay-filter="OnOff"{{ d.status == 1 ? 'checked' : '' }} >
+            </script>
+            <!--操作模板-->
+            <script type="text/html" id="HY-table-toolbar">
+                <a class="layui-btn layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i> 编辑</a>
+            </script>
+        </div>
+        <div class="container-fluid">
+            <p style="text-align: center;line-height: 30px; padding-bottom: 20px;">填写表单时注意填写项的具体要求，上传图片时注意图片格式与大小的限制<br/>
+                内部资料，严禁外泄，公司对平台数据信息保留责任追溯的权利。</p>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','table'], function () {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form
+            ,table = layui.table;
+        table.render({
+            elem: '#LAY-table-manage'
+            ,url: "{:url('admin/v1.Article/cateIndex')}"
+            ,response: {
+                statusCode: 220 //成功的状态码，默认：0
+            }
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers', width: 60, title: '序号'}
+                ,{field: 'name', title: '养生分类'}
+                ,{field: 'create_time', title: '创建时间', width: 160, sort: true}
+                ,{field: 'update_time', title: '更新时间', width: 160, sort: true}
+                ,{field: 'status',fixed: 'right', width: 90, title: '状态', align: 'center', templet: '#HY-staBar'}
+                ,{title: '操作', width: 360, align: 'center', fixed: 'right', toolbar: '#HY-table-toolbar'}
+            ]]
+            ,page: true
+            ,limits: [10, 15]
+            ,limit: 10
+            ,text: {
+                none: '对不起，暂无相关数据' //默认：无数据
+            }
+        });
+
+        //添加按钮
+        $('#HY-listTop-add').click(function () {
+            var url = "{:url('admin/v1.Article/addCate')}";
+            wk.layer_show_url('添加养生分类',url,500,200)
+        });
+        //返回按钮
+        $('#HY-listTop-back').click(function () {
+            var url = "{:url('admin/v1.Article/articleIndex')}";
+            wk.href(url);
+        });
+        //监听状态开关操作
+        form.on('switch(OnOff)', function (obj) {
+            var num = '';
+            obj.elem.checked == true? num = 1: num = 2;
+            //数据状态
+            wk.status(this.value,num, '{:url(\'admin/v1.Article/cateState\')}',obj);
+        });
+
+        //监听表格右侧工具条
+        table.on('tool(LAY-table-manage)', function(obj){
+            var data = obj.data;
+            switch(obj.event){
+                case 'edit': //修改编辑
+                    var url ="{:url('admin/v1.Article/editCate')}?id="+data.id;
+                    wk.layer_show_url('修改养生分类',url,500,200);
+                    break;
+                case 'del':  //单条删除
+                    var id = data.id;
+                    url = "{:url('admin/v1.Article/delCate')}?id="+data.id;
+                    msg = '确定删除此分类么';
+                    wk.confirm(id,url,msg);
+            }
+        });
+    });
+</script>
+</body>
+</html>

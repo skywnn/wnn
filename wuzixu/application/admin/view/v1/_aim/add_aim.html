@@ -1,0 +1,105 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid layui-col-md12">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <form class="layui-form">
+                <div class="layui-tab hy-tab-card">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">基本信息</li>
+                        <li>简介</li>
+                    </ul>
+                    <div class="layui-tab-content">
+                        <div class="layui-tab-item layui-show">
+                            <input type="hidden" name="operate_id" value="{:session('user_id')}">
+                            <div class="layui-form-item hy-form-item-md8">
+                                <label class="layui-form-label">文章标题</label>
+                                <div class="layui-input-inline hy-form-name">
+                                    <input type="text" name="name"  lay-verify="required" value="" autocomplete="off" placeholder="请输入文章标题" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux"><span class="hy-form-star">*</span>&nbsp必填项</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">数据状态</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="status" value="1" title="显示">
+                                    <input type="radio" name="status" value="2" title="屏蔽">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-tab-item">
+                            <div class="layui-form-item layui-form-text hy-form-item-md14">
+                                <label class="layui-form-label">简介</label>
+                                <div class="layui-input-block">
+                                    <textarea name="content" id="container" placeholder="编辑正文详情，严格遵守《泓沄内容审核标准》，严禁发布违法内容哦" class="layui-textarea" rows="50"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="set-form-element" id="submit">
+                            <i class="layui-icon layui-icon-ok"></i> 提交
+                        </button>
+                        <button class="layui-btn layui-btn-primary" id="close" onclick="javascript:history.back(-1);return false;">
+                            <i class="layui-icon layui-icon-close"></i> 取消
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="container-fluid">
+            <p style="text-align: center;line-height: 30px; padding-bottom: 20px;">填写表单时注意填写项的具体要求，上传图片时注意图片格式与大小的限制<br/>
+                内部资料，严禁外泄，公司对平台数据信息保留责任追溯的权利。</p>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','element','upload','layedit'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,element = layui.element
+            ,upload = layui.upload
+            ,layedit = layui.layedit
+            ,form = layui.form;
+
+        form.on('submit(set-form-element)', function (data) {
+            $('.layui-btn').addClass('layui-disabled').attr('disabled','disabled');
+            $.ajax({
+                url: "{:url('admin/v1.Aim/addAim')}",
+                type:'post',
+                dataType:'json',
+                data:data.field,
+                success:function(res){
+                    if (res.code == 200) {
+                        wk.success(res.msg,'wk.layer_close()');
+                        history.back(-1);
+                    } else {
+                        $(".layui-btn").removeClass('layui-disabled').removeAttr('disabled');
+                        wk.error(res.msg);
+                    }
+                }
+            })
+            return false;
+        });
+        //返回取消按钮
+        $('#close').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+    });
+</script>
+</body>
+<script id="container" name="content" type="text/plain"></script>
+<script id="container1" name="contenta" type="text/plain"></script>
+<script type="text/javascript" src="__UE__/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="__UE__/ueditor/ueditor.all.js"></script>
+<script type="text/javascript">
+    var ue = UE.getEditor('container',{
+        //初始化高度
+        initialFrameHeight:500,
+    });
+</script>
+</html>

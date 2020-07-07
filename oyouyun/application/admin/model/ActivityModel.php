@@ -38,6 +38,7 @@ class ActivityModel extends BaseModel
     {
         return $this->where($map)->count();
     }
+
     /**
      * [insertActivity 添加活动]
      */

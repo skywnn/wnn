@@ -1,0 +1,106 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid layui-col-md12">
+    <div class="layui-card">
+        <div class="layui-card-header">
+            添加新的公告通知
+        </div>
+        <form class="layui-form">
+            <div class="layui-card-body">
+                <input type="hidden" name="operate_id" value="{:session('user_id')}">
+                <div class="layui-form-item hy-form-item-md8">
+                    <label class="layui-form-label">通知标题</label>
+                    <div class="layui-input-inline hy-form-name">
+                        <input type="text" name="title"  lay-verify="required" value="" autocomplete="off" placeholder="请输入通知标题" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"><span class="hy-form-star">*</span>&nbsp必填项</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">通知类型</label>
+                    <div class="layui-input-inline">
+                        <select name="cate_id" lay-verify="required">
+                            <option value="">请选择通知类型</option>
+                            {if !empty($cate)}
+                            {foreach name="cate" item="vo"}
+                            <option value="{$vo.id}">{$vo.name}</option>
+                            {/foreach}
+                            {/if}
+                        </select>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"><span class="hy-form-star">*</span>&nbsp请选择正确的通知类型</div>
+                </div>
+                <div class="layui-form-item layui-form-text hy-form-item-md14">
+                    <label class="layui-form-label">正文详情</label>
+                    <div class="layui-input-block">
+                        <textarea name="content"  placeholder="编辑正文详情，严格遵守《活动审核标准》，严禁发布违法内容哦" class="layui-textarea" rows="20"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">是否推荐</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="is_rec" value="1" title="推荐" checked>
+                        <input type="radio" name="is_rec" value="0" title="不推荐">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">数据状态</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="status" value="1" title="显示" checked>
+                        <input type="radio" name="status" value="0" title="屏蔽">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="set-form-element" id="submit">
+                            <i class="layui-icon layui-icon-ok"></i> 提交
+                        </button>
+                        <button class="layui-btn layui-btn-primary" id="close" onclick="javascript:history.back(-1);">
+                            <i class="layui-icon layui-icon-close"></i> 取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="container-fluid">
+            <p style="text-align: center;line-height: 30px; padding-bottom: 20px;">填写表单时注意填写项的具体要求，上传图片时注意图片格式与大小的限制<br/>
+                内部资料，严禁外泄，公司对平台数据信息保留责任追溯的权利。</p>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','element','upload','layedit'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,element = layui.element
+            ,upload = layui.upload
+            ,layedit = layui.layedit
+            ,form = layui.form;
+
+        form.on('submit(set-form-element)', function (data) {
+            $('.layui-btn').addClass('layui-disabled').attr('disabled','disabled');
+            $.ajax({
+                url: "{:url('admin/v1.Notice/addNotice')}",
+                type:'post',
+                dataType:'json',
+                data:data.field,
+                success:function(res){
+                    if (res.code == 200) {
+                        wk.success(res.msg,'wk.layer_close()');
+                        history.back(-1);
+                    } else {
+                        wk.error(res.msg,'$(".layui-btn").removeClass(\'layui-disabled\').removeAttr(\'disabled\')');
+                    }
+                }
+            })
+        });
+        //返回取消按钮
+        $('#close').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+    });
+</script>
+</body>
+</html>
