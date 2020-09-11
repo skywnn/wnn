@@ -1,0 +1,72 @@
+{include file="common/header"}
+<style type="text/css">
+    tr td{
+        width: 200px;
+        padding-bottom: 30px;
+    }
+    .shop{
+        width: 90px;
+        color: gray;
+        text-align: right;
+    }
+</style>
+<body>
+<div class="layui-fluid layui-col-md12">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-card">
+                <div class="layui-card-header">个人信息</div>
+                <div class="layui-card-body">
+                    <table border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td class="shop">主办方名称：</td>
+                            <td>{$item.name}</td>
+                            <td class="shop">主办方简称：</td>
+                            <td>{$item.short_name}</td>
+                            <td class="shop">联系电话：</td>
+                            <td>{$item.tel}</td>
+                        </tr>
+                        <tr>
+                            <td class="shop">LOGO：</td>
+                            <td colspan="5">
+                                <img src="__STATIC__{$item.logo}" onerror="this.src='__STATIC__/default/timg.jpg'" style="width:300px;height: 200px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="shop">封面：</td>
+                            <td colspan="5">
+                                <img src="__STATIC__{$item.pic}" onerror="this.src='__STATIC__/default/timg.jpg'" style="width:300px;height: 200px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="shop">主办方简介：</td>
+                            <td colspan="5">{$item.summary==null?'暂无简介':$item.summary}</td>
+                        </tr>
+                        <tr>
+                            <td class="shop">管理员：</td>
+                            <td colspan="5">{$memberName==null?'暂无管理员':$memberName}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <p style="text-align: center;line-height: 30px; padding-bottom: 20px;">
+                    <button class="layui-btn layui-btn-primary" onclick="javascript:history.back(-1);return false">
+                        <i class="layui-icon layui-icon-close"></i> 取消
+                    </button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','table'], function () {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form
+            ,table = layui.table;
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+{include file="common/header"}
+<style type="text/css">
+    tr td{
+        width: 200px;
+        padding-bottom: 30px;
+    }
+    .shop{
+        width: 90px;
+        color: gray;
+        text-align: right;
+    }
+</style>
+<body>
+<div class="layui-fluid layui-col-md12">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-card">
+                <div class="layui-card-header">个人信息</div>
+                <div class="layui-card-body">
+                    <table border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td class="shop">会员昵称：</td>
+                            <td>{$item.nick_name}</td>
+                            <td class="shop">名称：</td>
+                            <td>{$item.name}</td>
+                            <td class="shop">联系电话：</td>
+                            <td>{$item.phone}</td>
+                        </tr>
+                        <tr>
+                            <td class="shop">购买数量：</td>
+                            <td>{$item.num}</td>
+                            <td class="shop">订票总价：</td>
+                            <td>{$item.order_original_price}</td>
+                            <td class="shop">总价(实付)：</td>
+                            <td>{$item.order_amount}</td>
+                        </tr>
+                        <tr>
+                            <td class="shop">验证码：</td>
+                            <td colspan="5">{$item.verification_code==0?"—— ——":$item.verification_code}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">活动信息</div>
+                <div class="layui-card-body">
+                    <table border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td class="shop">活动名称：</td>
+                            <td>{$item.act_title}</td>
+                            <td class="shop">主办方：</td>
+                            <td>{$item.c_title}</td>
+                            <td class="shop">联系电话：</td>
+                            <td>{$item.tel}</td>
+                        </tr>
+                        <tr>
+                            <td class="shop">活动时间：</td>
+                            <td colspan="6">{$item.start_time|date='Y-m-d H:i:s'} —— {$item.end_time|date='Y-m-d H:i:s'}</td>
+                        </tr>
+                        <tr>
+                            <td class="shop">活动地点：</td>
+                            <td colspan="5">{$item.province}{$item.city}{$item.district}{$item.address}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">票种信息</div>
+                <div class="layui-card-body">
+                    <table border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td class="shop">票种名称：</td>
+                            <td>{$item.t_title}</td>
+                            <td class="shop">起购时间：</td>
+                            <td>{$item.buy_time}</td>
+                            <td class="shop">票价：</td>
+                            <td>{$item.price}</td>
+                        </tr>
+                        <tr>
+                            <td class="shop">优惠价：</td>
+                            <td>{$item.m_price}</td>
+                            <td class="shop">会员价：</td>
+                            <td colspan="3">{$item.v_price}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <p style="text-align: center;line-height: 30px; padding-bottom: 20px;">
+                    <button class="layui-btn layui-btn-primary" onclick="javascript:history.back(-1);return false">
+                        <i class="layui-icon layui-icon-close"></i> 取消
+                    </button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','table'], function () {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form
+            ,table = layui.table;
+    });
+</script>
+</body>
+</html>

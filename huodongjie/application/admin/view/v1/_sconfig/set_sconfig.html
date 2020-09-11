@@ -1,0 +1,76 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-header layuiadmin-card-header-auto">配置站点参数值</div>
+        <div class="layui-card-body">
+            <div class="layui-form">
+                <input type="hidden" name="operate_id" value="{:session('user_id')}">
+                {volist name="lists" id="vo"}
+                <div class="layui-form-item hy-form-item-md8">
+                    <label class="layui-form-label">{$vo.name}</label>
+                    {if $vo['type'] == '单行文本'}
+                    <div class="layui-input-inline">
+                        <input type="text" name="config[{$vo['id']}]" value="{$vo['value']}" lay-verify="required|name" autocomplete="off" placeholder="请输入{$vo['name']}" class="layui-input">
+                    </div>
+                    {elseif $vo['type'] == '多行文本' /}
+                    <div class="layui-input-block">
+                        <textarea name="config[{$vo['id']}]" placeholder="请输入正确的内容" class="layui-textarea">{$vo['value']}</textarea>
+                    </div>
+                    {elseif $vo['type'] == '单选' /}
+                    <?php $_attr = explode(',', $vo['optional']);?>
+                    <div class="layui-input-block">
+                        {foreach $_attr as $k1 => $v1 }
+                        <input <?php if($v1 == $vo['value']) echo 'checked="checked"'; ?> type="radio" name="config[{$vo['id']}]" value="{$v1}" id="inlineRadio2"> {$v1}
+                        {/foreach}
+                    </div>
+                    {/if}
+                </div>
+                {/volist}
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="set-form-element">
+                            <i class="layui-icon layui-icon-ok"></i> 提交
+                        </button>
+                        <button class="layui-btn layui-btn-primary" id="close" onclick="javascript:history.back(-1);">
+                            <i class="layui-icon layui-icon-close"></i> 取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form;
+
+        form.on('submit(set-form-element)', function (data) {
+            $('.layui-btn').addClass('layui-disabled').attr('disabled','disabled');
+            $.ajax({
+                url:"{:url('admin/v1.Sconfig/setSconfig')}",
+                type:'post',
+                dataType:'json',
+                data:data.field,
+                success:function(res){
+                    if (res.code == 200) {
+                        wk.success(res.msg,'wk.layer_close()');
+                        history.back(-1);
+                    } else {
+                        wk.error(res.msg,'$(".layui-btn").removeClass(\'layui-disabled\').removeAttr(\'disabled\')');
+                    }
+                }
+            })
+        });
+        //返回取消按钮
+        $('#close').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+    });
+</script>
+</body>
+</html>

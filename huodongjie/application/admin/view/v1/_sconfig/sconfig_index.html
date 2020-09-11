@@ -1,0 +1,122 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        关键字
+                    </div>
+                    <div class="layui-inline" style="width: 300px">
+                        <input type="text" id="key" name="keyword" value="" lay-verify="title" autocomplete="off" placeholder="请输入参数名称" class="layui-input"/>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit="" lay-filter="LAY-search">
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                        <button type="reset" class="layui-btn layui-btn-danger" id="empty"  lay-submit="" lay-filter="LAY-search">
+                            <i class="layui-icon layui-icon-refresh layuiadmin-button-btn"></i>
+                        </button>
+                    </div>
+                    <div class="layui-inline layui-layout-right" id="hy-listTop-right" style="padding-right: 10px; padding-top: 15px;">
+                        <button class="layui-btn" id="HY-listTop-add">
+                            <i class="fa fa-plus"></i> 添加站点参数
+                        </button>
+                        <button class="layui-btn" id="HY-listTop-set">
+                            <i class="fa fa-pencil"></i> 配置参数值
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <!--表格-->
+            <table id="LAY-table-manage" lay-filter="LAY-table-manage"></table>
+            <!--操作模板-->
+            <script type="text/html" id="HY-table-toolbar">
+                <a class="layui-btn layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i> 编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="fa fa-trash-o"></i> 删除</a>
+            </script>
+        </div>
+        <div class="container-fluid">
+            <p style="text-align: center;line-height: 30px; padding-bottom: 20px;">填写表单时注意填写项的具体要求，上传图片时注意图片格式与大小的限制<br/>
+                内部资料，严禁外泄，公司对平台数据信息保留责任追溯的权利。</p>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','table'], function () {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form
+            ,table = layui.table;
+        table.render({
+            elem: '#LAY-table-manage'
+            ,url: "{:url('admin/v1.Sconfig/sconfigIndex')}"
+            ,response: {
+                statusCode: 220 //成功的状态码，默认：0
+            }
+
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers', width: 60, title: '序号'}
+                ,{field: 'name', title: '站点参数', width:160}
+                ,{field: 'type', title: '参数类型', width:160}
+                ,{field: 'optional', title: '可选值', width:300}
+                ,{field: 'value', title: '参数值'}
+                ,{field: 'update_time', title: '更新时间', width: 160, sort: true}
+                ,{title: '操作', width: 200, align: 'center', fixed: 'right', toolbar: '#HY-table-toolbar'}
+            ]]
+            ,page: true
+            ,limits: [10, 15]
+            ,limit: 10
+            ,text: {
+                none: '对不起，暂无相关数据' //默认：无数据
+            }
+        });
+
+        //添加按钮
+        $('#HY-listTop-add').click(function () {
+            var url = "{:url('admin/v1.Sconfig/addSconfig')}";
+            wk.layer_show_url('添加站点参数',url,600,380)
+        });
+        //设置参数值
+        $('#HY-listTop-set').click(function () {
+            var url = "{:url('admin/v1.Sconfig/setSconfig')}";
+            wk.href(url);
+        });
+
+        //监听状态开关操作
+        form.on('switch(OnOff)', function (obj) {
+            var num = '';
+            obj.elem.checked == true? num = 1: num = 2;
+            //数据状态
+            wk.status(this.value,num, '{:url(\'admin/v1.Sconfig/sconfigState\')}',obj);
+        });
+
+        //监听表格右侧工具条
+        table.on('tool(LAY-table-manage)', function(obj){
+            var data = obj.data;
+            switch(obj.event){
+
+                case 'edit': //修改编辑
+                    var url ="{:url('admin/v1.Sconfig/editSconfig')}?id="+data.id;
+                    wk.layer_show_url('修改站点参数',url,600,380);
+                    break;
+                case 'icon': //参数图标
+                    var url ="{:url('admin/v1.Sconfig/sconfigIcon')}?id="+data.id;
+                    wk.layer_show_url('上传参数图标',url,500,360);
+                    break;
+                case 'del':  //单条删除
+                    var id = data.id;
+                    url = "{:url('admin/v1.Sconfig/delSconfig')}?id="+data.id;
+                    msg = '确定删除此参数么';
+                    wk.confirm(id,url,msg);
+            }
+        });
+    });
+</script>
+</body>
+</html>

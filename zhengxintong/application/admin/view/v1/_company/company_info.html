@@ -1,0 +1,117 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-form layui-col-md12" wid100>
+            <div class="layui-card">
+                <div class="layui-card-header layuiadmin-card-header-auto">
+                    企业信息
+                    <a class="layui-a-tips" id="HY-companyInfo-bases"><i class="fa fa-pencil"></i> 修改</a>
+                </div>
+                <div class="layui-card-body" pad15>
+                    <div class="layui-form-item hy-form-item-md8">
+                        <label class="layui-form-label">企业名称</label>
+                        <div class="layui-input-inline hy-form-name">
+                            <div class="layui-form-mid layui-word-aux">{$company.title}</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item hy-form-item-md8">
+                        <label class="layui-form-label">企业简称</label>
+                        <div class="layui-input-inline hy-form-name">
+                            <div class="layui-form-mid layui-word-aux">{$company.name}</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item hy-form-item-md8">
+                        <label class="layui-form-label">公司地址</label>
+                        <div class="layui-input-inline hy-form-name">
+                            <div class="layui-form-mid layui-word-aux">{$company.address}</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item hy-form-item-md8">
+                        <label class="layui-form-label">公司网址</label>
+                        <div class="layui-input-inline hy-form-name">
+                            <div class="layui-form-mid layui-word-aux">{$company.site_url}</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item hy-form-item-md8">
+                        <label class="layui-form-label">客服电话</label>
+                        <div class="layui-input-inline hy-form-name">
+                            <div class="layui-form-mid layui-word-aux">{$company.tel}</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item hy-form-item-md8">
+                        <label class="layui-form-label">所属行业</label>
+                        <div class="layui-input-inline hy-form-name">
+                            <div class="layui-form-mid layui-word-aux">{$company.trade}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header layuiadmin-card-header-auto">
+                    负责人信息
+                    <a class="layui-a-tips" id="HY-companyInfo-contacts"><i class="fa fa-pencil"></i> 修改</a>
+                </div>
+                <div class="layui-card-body" pad15>
+                    <div class="layui-form-item hy-form-item-md8">
+                        <label class="layui-form-label">联系人</label>
+                        <div class="layui-input-inline">
+                            <div class="layui-form-mid layui-word-aux">{$company.contacts}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item hy-form-item-md8">
+                        <label class="layui-form-label">联系电话</label>
+                        <div class="layui-input-inline hy-form-name">
+                            <div class="layui-form-mid layui-word-aux">{$company.phone}</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">联系邮箱</label>
+                        <div class="layui-input-inline hy-form-name">
+                            <div class="layui-form-mid layui-word-aux">{$company.email}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header layuiadmin-card-header-auto">认证信息</div>
+                <div class="layui-card-body" pad15>
+                    <div class="layui-form-item hy-form-item-md8">
+                        <label class="layui-form-label">企业法人</label>
+                        <div class="layui-input-inline hy-form-name">
+                            <div class="layui-form-mid layui-word-aux">{$company.faren}</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item hy-form-item-md8">
+                        <label class="layui-form-label">统一信用码</label>
+                        <div class="layui-input-inline hy-form-name">
+                            <div class="layui-form-mid layui-word-aux">{$company.xinyongma}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form;
+
+        //修改企业信息
+        $('#HY-companyInfo-bases').click(function () {
+            var url = "{:url('admin/v1.Company/editCompanyBase')}?id={$company.id}";
+            wk.layer_show_url('修改企业信息',url,600,470)
+        });
+        //修改联系人信息
+        $('#HY-companyInfo-contacts').click(function () {
+            var url = "{:url('admin/v1.Company/editCompanyContacts')}?id={$company.id}";
+            wk.layer_show_url('修改联系人信息',url,500,310)
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-form">
+                <input type="hidden" name="activity_id" value="{$item.id}">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">场次时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="activity_time" class="layui-input" id="activity_time" placeholder="yyyy-MM-dd HH:mm:ss">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="set-form-element">
+                            <i class="layui-icon layui-icon-ok"></i> 提交
+                        </button>
+                        <button class="layui-btn layui-btn-primary" id="close">
+                            <i class="layui-icon layui-icon-close"></i> 取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','laydate'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form
+            ,laydate = layui.laydate;
+
+        form.on('submit(set-form-element)', function (data) {
+            $('.layui-btn').addClass('layui-disabled').attr('disabled','disabled');
+            $.ajax({
+                url:"{:url('admin/v1.Activity/addScene')}",
+                type:'post',
+                dataType:'json',
+                data:data.field,
+                success:function(res){
+                    if (res.code == 200) {
+                        wk.success(res.msg,'wk.layer_close()');
+                        parent.location.reload();
+                    } else {
+                        wk.error(res.msg,'$(".layui-btn").removeClass(\'layui-disabled\').removeAttr(\'disabled\')');
+                    }
+                }
+            });
+            return false;
+        });
+
+        //限定可选日期
+       var actTime = laydate.render({
+            elem: '#activity_time'
+            ,type: 'datetime'
+            ,min: "{$item.start_time|date='Y-m-d h:i:s'}"
+            ,max: "{$item.end_time|date='Y-m-d h:i:s'}"
+            ,ready: function(){
+               actTime.hint("活动日期可选值设定在 <br> {$item.start_time|date='Y-m-d h:i:s'} 到 {$item.end_time|date='Y-m-d h:i:s'}");
+            }
+        });
+        //返回取消按钮
+        $('#close').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+    });
+</script>
+</body>
+</html>

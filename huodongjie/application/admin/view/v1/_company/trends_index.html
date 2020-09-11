@@ -1,0 +1,203 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        关键字
+                    </div>
+                    <div class="layui-inline" style="width: 300px">
+                        <input type="text" id="key" name="keyword" value="" lay-verify="title" autocomplete="off" placeholder="请输入动态标题" class="layui-input"/>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit="" lay-filter="LAY-search">
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                        <button type="reset" class="layui-btn layui-btn-danger" id="empty"  lay-submit="" lay-filter="LAY-search">
+                            <i class="layui-icon layui-icon-refresh layuiadmin-button-btn"></i>
+                        </button>
+                    </div>
+                    <div class="layui-inline layui-layout-right" id="hy-listTop-right" style="padding-right: 10px; padding-top: 15px;">
+                        <button class="layui-btn" onclick="javascript:history.back(-1);return false;">
+                            <i class="fa fa-undo layuiadmin-button-btn"></i> 返回
+                        </button>
+<!--                        <button class="layui-btn" id="hy-listTop-statistic" lay-event="statistic">-->
+<!--                            <i class="fa fa-line-chart"></i> 数据统计-->
+<!--                        </button>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <!--表格-->
+            <table id="LAY-table-manage" lay-filter="LAY-table-manage"></table>
+            <!--图片模板-->
+            <script type="text/html" id="HY-imgTpl">
+                <img src="{{d.icon}}" class="layui-table-img layui-circle" onerror="this.src='__STATIC__/admin/images/head_default.gif'" style="width: 28px" />
+            </script>
+            <!--状态模板-->
+            <script type="text/html" id="HY-staBar">
+                <input type="checkbox" value="{{d.id}}"  lay-skin="switch"  lay-text="ON|OFF" lay-filter="OnOff"{{ d.status == 1 ? 'checked' : '' }} >
+            </script>
+            <!--操作模板-->
+            <script type="text/html" id="HY-table-toolbar">
+                <!-- <a class="layui-btn layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i> 编辑</a>-->
+<!--                <a class="layui-btn layui-btn-xs" lay-event="sel"><i class="fa fa-pencil"></i> 查看</a>-->
+                {{#if(d.status==0){}}
+                <a class="layui-btn layui-btn-xs" lay-event="pass"><i class="fa fa-pencil"></i> 通过</a>
+                <a class="layui-btn layui-btn-xs" lay-event="refuse"><i class="fa fa-pencil"></i> 拒绝</a>
+                {{#}}}
+                <a class="layui-btn layui-btn-xs" lay-event="sel_trends"><i class="fa fa-pencil"></i> 查看动态</a>
+<!--                <a class="layui-btn layui-btn-xs" title="冻结" lay-event="frozen"><i class="layui-icon layui-icon-password"></i> 锁定</a>-->
+<!--                <a class="layui-btn layui-btn-danger layui-btn-xs" title="撤销" lay-event="del"><i class="layui-icon layui-icon-unlink"></i> 解绑</a>-->
+            </script>
+        </div>
+        <div class="container-fluid">
+            <p style="text-align: center;line-height: 30px; padding-bottom: 20px;">填写表单时注意填写项的具体要求，上传图片时注意图片格式与大小的限制<br/>
+                内部资料，严禁外泄，公司对平台数据信息保留责任追溯的权利。</p>
+        </div>
+    </div>
+
+<!--    拒绝原因-->
+    <div id="s_cause" style="display: none">
+        <form class="layui-form" method="post" style="margin-top:50px;">
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <textarea id="cause" style="width: 300px" placeholder="请填写原因" class="layui-textarea"></textarea>
+                    <span style="color: red;display: none">中文长度不能大于100，英文长度不能200</span>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','table'], function () {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form
+            ,table = layui.table;
+        table.render({
+            elem: '#LAY-table-manage'
+            ,url: "{:url('admin/v1.Company/trendsIndex')}?id={$item.id}"
+            ,response: {
+                statusCode: 220 //成功的状态码，默认：0
+            }
+
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers', title: '序号', width: 60}
+                ,{field: 'pic', title: '封面图', width: 80, align: 'center', templet: '#HY-imgTpl'}
+                ,{field: 'title', title: '动态标题',width: 120}
+                ,{field: 'nick_name', title: '用户昵称',width: 120}
+                ,{field: 'browse_num', title: '浏览量',width: 120}
+                ,{field: 'like_num', title: '点赞量',width: 120}
+                ,{field: 'status', title: '状态',width: 120,templet:function (obj,val) {
+                        var s = "";
+                        switch (obj.status) {
+                            case 0:
+                                s = "<span style='color: blue'>未审核</span>";
+                                break;
+                            case 1:
+                                s = "<span style='color: green'>已通过</span>"
+                                break;
+                            case 2:
+                                s = "<span style='color: red'>已拒绝</span>";
+                                break;
+                        }
+                        return "<div>"+s+"</div>";
+                    }}
+                ,{field: 'create_time', title: '创建时间',width: 120}
+                ,{field: 'update_time', title: '更新时间',width: 120}
+                ,{title: '操作', minWidth: 360, align: 'center', fixed: 'right', toolbar: '#HY-table-toolbar'}
+            ]]
+            ,page: true
+            ,limits: [10, 15]
+            ,limit: 10
+            ,text: {
+                none: '对不起，暂无相关数据' //默认：无数据
+            }
+        });
+
+        //添加按钮
+        $('#HY-listTop-add').click(function () {
+            var url = "{:url('admin/v1.Company/addCompany')}";
+            wk.layer_show_url('添加新公司',url,500,430)
+        });
+        //监听状态开关操作
+        form.on('switch(OnOff)', function (obj) {
+            var num = '';
+            obj.elem.checked == true? num = 1: num = 2;
+            //数据状态
+            wk.status(this.value,num, '{:url(\'admin/v1.Company/companyState\')}',obj);
+        });
+        //监听表格右侧工具条
+        table.on('tool(LAY-table-manage)', function(obj){
+            var data = obj.data;
+            switch(obj.event){
+                case 'sel_trends':
+                    var id = data.id;
+                    var url = "{:url('admin/v1.Company/trendsDetail')}?id="+data.id;
+                    wk.href(url);
+                    break;
+                case 'pass'://通过
+                    var id = data.id;
+                    var url = "{:url('admin/v1.Company/trendsState')}";
+                    $.ajax({
+                        url:url
+                        ,type:'post'
+                        ,dataType:'json'
+                        ,data:{'id':id,'status':1}
+                        ,success:function (res) {
+                            if (res.code==200) {
+                                layer.msg(res.msg,{icon:1,time:1500,shade: 0.1},function(){
+                                    $(".layui-laypage-btn").click();
+                                });
+                            } else {
+                                layer.msg(res.msg,{icon:2,time:1500,shade: 0.1});
+                            }
+                        }
+                    });
+                    break;
+                case 'refuse'://拒绝
+                    var id = data.id;
+                    var url = "{:url('admin/v1.Company/trendsState')}";
+                    var index = layer.open({
+                        type:1,
+                        title: '违规内容',
+                        btn:['提交'],
+                        area:['500px', '350px'],
+                        content: $('#s_cause'),
+                        yes:function (index, layero) {
+                            if ($('#cause').val().length>=200 || $('#cause').val().length<=0) {
+                                $('#violation span').css('display','block');
+                                return false;
+                            }
+                            $.ajax({
+                                url:url
+                                ,type:'post'
+                                ,dataType:'json'
+                                ,data:{'id':id,'status':2,'refuse_cause':$('#cause').val()}
+                                ,success:function (res) {
+                                    if (res.code==200) {
+                                        layer.msg(res.msg,{icon:1,time:1500,shade: 0.1},function(){
+                                            //重载当前页表格
+                                            $(".layui-laypage-btn").click();
+                                            layer.close(index);
+                                        });
+                                    } else {
+                                        layer.msg(res.msg,{icon:2,time:1500,shade: 0.1});
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    break;
+            }
+        });
+    });
+</script>
+</body>
+</html>

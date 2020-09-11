@@ -1,0 +1,131 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-form layui-col-md12" wid100>
+            <div class="layui-card">
+                <div class="layui-card-header layuiadmin-card-header-auto">
+                    开发信息
+                    {if $item['appid'] == null}
+                    <a class="layui-a-tips" id="HY-companyDev-create"><i class="fa fa-plus"></i> 申请开发者</a>
+                    {else /}
+                    <a class="layui-a-tips" id="HY-companyDev-secret"><i class="fa fa-plus"></i> 重置开发者密码</a>
+                    {/if}
+                </div>
+                <div class="layui-card-body" pad15>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">开发者ID (AppID)</label>
+                        <div class="layui-input-block">
+                            <div class="layui-form-mid layui-word-aux">{$item.appid}</div>
+                            <div class="layui-form-mid layui-word-aux layui-clear">开发者ID是泓沄开发识别码，配合开发者密码可调用泓沄的接口能力</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">开发者密码(AppSecret)</label>
+                        <div class="layui-input-block">
+                            <div class="layui-form-mid layui-word-aux">{$item.appsecret}</div>
+                            <div class="layui-form-mid layui-word-aux layui-clear">开发者密码是校验泓沄号开发者身份的密码，具有极高的安全性。切记勿把密码直接交给第三方开发者或直接存储在代码中。如需第三方代开发公众号，请定期重置密码</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header layuiadmin-card-header-auto">
+                    第三方平台配置信息
+                    <a class="layui-a-tips" id="HY-companyDev-bind"><i class="fa fa-plus"></i> 添加绑定</a>
+                </div>
+                <div class="layui-card-body" pad15>
+                    <!--表格-->
+                    <table id="LAY-table-manage" lay-filter="LAY-table-manage"></table>
+                    <!--状态模板-->
+                    <script type="text/html" id="HY-staBar">
+                        <input type="checkbox" name="switch" value="{{d.id}}"  lay-skin="switch"  lay-text="ON|OFF" lay-filter="OnOff"{{ d.status == 1 ? 'checked' : '' }} >
+                    </script>
+                    <!--操作模板-->
+                    <script type="text/html" id="HY-table-toolbar">
+                        <a class="layui-btn layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i> 编辑</a>
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="fa fa-trash-o"></i> 删除</a>
+                    </script>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','table'], function () {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form
+            ,table = layui.table;
+
+        table.render({
+            elem: '#LAY-table-manage'
+            ,url: "{:url('admin/v1.Company/companyThirdList')}"
+            ,response: {
+                statusCode: 220 //成功的状态码，默认：0
+            }
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers', width: 60, title: '序号'}
+                ,{field: 'name', title: '名称', width: 200}
+                ,{field: 'xcx_appid', title: '小程序AppID'}
+                ,{field: 'mchid', title: '微信支付商户号', width: 150}
+                ,{field: 'create_time', title: '创建时间', width: 160, sort: true}
+                ,{field: 'update_time', title: '更新时间', width: 160, sort: true}
+                ,{field: 'status', fixed: 'right', width: 90, title: '状态', align: 'center', templet: '#HY-staBar'}
+                ,{title: '操作', width: 360, align: 'center', fixed: 'right', toolbar: '#HY-table-toolbar'}
+            ]]
+            ,page: true
+            ,limits: [10, 15]
+            ,limit: 10
+            ,text: {
+                none: '对不起，暂无相关数据' //默认：无数据
+            }
+        });
+        //申请成为开发者
+        $('#HY-companyDev-create').click(function () {
+            var url = "{:url('admin/v1.Company/createCompanyDeveloperKey')}";
+                msg = '确定申请成为开发者么';
+            wk.confirm(0,url,msg);
+        });
+        //重置开发者密码
+        $('#HY-companyDev-secret').click(function () {
+            var url = "{:url('admin/v1.Company/resetCompanyDeveloperSecret')}";
+            msg = '确定重置开发者密码么';
+            wk.confirm(0,url,msg);
+        });
+        //添加平台绑定
+        $('#HY-companyDev-bind').click(function () {
+            var url = "{:url('admin/v1.Company/bindCompanyThird')}?id={$item.id}";
+            wk.layer_show_url('添加平台绑定',url,850,650)
+        });
+
+        //监听状态开关操作
+        form.on('switch(OnOff)', function (obj) {
+            var num = '';
+            obj.elem.checked == true? num = 1: num = 2;
+            //数据状态
+            wk.status(this.value,num, '{:url(\'admin/v1.Company/companyThirdState\')}',obj);
+        });
+        //监听表格右侧工具条
+        table.on('tool(LAY-table-manage)', function(obj){
+            var data = obj.data;
+            switch(obj.event){
+
+                case 'edit': //修改编辑
+                    var url ="{:url('admin/v1.Company/editCompanyThird')}?id="+data.id;
+                    wk.layer_show_url('修改服务分类',url,850,650);
+                    break;
+                case 'del':  //单条删除
+                    var id = data.id;
+                    url = "{:url('admin/v1.Company/delCompanyThird')}?id="+data.id;
+                    msg = '确定删除此条信息么';
+                    wk.confirm(id,url,msg);
+            }
+        });
+    });
+</script>
+</body>
+</html>

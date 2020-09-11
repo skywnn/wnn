@@ -1,0 +1,85 @@
+{include file="common/header"}
+<style type="text/css">
+    tr td{
+        width: 200px;
+        padding-bottom: 30px;
+    }
+    .shop{
+        width: 90px;
+        color: gray;
+        text-align: right;
+    }
+</style>
+<body>
+<div class="layui-fluid layui-col-md12">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-tab">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">基本信息</li>
+                    <li>文章内容</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <table border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td class="shop">动态标题：</td>
+                                <td>{$item.title}</td>
+                                <td class="shop">创建时间：</td>
+                                <td>{$item.create_time|date='Y-m-d H:i:s'}</td>
+                                <td class="shop">用户昵称：</td>
+                                <td>{$item.nick_name}</td>
+                            </tr>
+                            <tr>
+                                <td class="shop">浏览量：</td>
+                                <td>{$item.browse_num}</td>
+                                <td class="shop">点赞量：</td>
+                                <td colspan="3">{$item.like_num}</td>
+                            </tr>
+                            <tr>
+                                <td class="shop">动态图片：</td>
+                                <td colspan="5">
+                                    <div class="layui-upload-list" id="demo">
+                                        {if !empty($pics)}
+                                        {volist name="pics" id="vo"}
+                                        <span>
+											<img src="{$vo.pic}" style="width: 300px;height: 300px;">
+										</span>
+                                        {/volist}
+                                        {else /}
+                                        <span>暂无图片</span>
+                                        {/if}
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="layui-tab-item">
+                        <input type="hidden" value="{$item.content}" id="content"/>
+                        <div id="articleContent" style="width: 600px;">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <p style="text-align: center;line-height: 30px; padding-bottom: 20px;">
+                <button class="layui-btn layui-btn-primary" onclick="javascript:history.back(-1);">
+                    <i class="layui-icon layui-icon-close"></i> 取消
+                </button>
+            </p>
+        </div>
+    </div>
+</div>
+{include file="common/footer"}
+<script>
+    $(function () {
+        $('#articleContent').html($('#content').val());
+    })
+    layui.use(['layer','form','table'], function () {
+
+    });
+</script>
+</body>
+</html>

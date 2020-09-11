@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul>
+    {volist name="item" id="vo"}
+    <li>
+        {$vo.name}
+        <ul>
+            {volist name="vo['second']" id="mo"}
+            <li>{$mo.name}</li>
+            {/volist}
+        </ul>
+    </li>
+    {/volist}
+</ul>
+</body>
+</html>

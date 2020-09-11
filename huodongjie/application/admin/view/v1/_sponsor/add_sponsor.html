@@ -1,0 +1,249 @@
+{include file="common/header"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <form class="layui-form" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="operate_id" value="{:session('user_id')}">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">公司名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="name" value="" lay-verify="required" autocomplete="off" placeholder="请输入完整的主办方名称" class="layui-input">
+                        <div class="layui-form-mid layui-word-aux"><span class="hy-form-star">*</span>&nbsp主办方名称必须完整全称</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">公司简称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="short_name" value="" lay-verify="required" autocomplete="off" placeholder="请输入主办方名称简称" class="layui-input">
+                        <div class="layui-form-mid layui-word-aux"><span class="hy-form-star">*</span>&nbsp主办方简称一般不超于6个字</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">LOGO</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-upload-drag" id="logo">
+                            <img src="__STATIC__/default/timg.jpg" alt="上传成功后渲染" style="max-width: 196px">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">封面图</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-upload-drag" id="pic">
+                            <img src="__STATIC__/default/timg.jpg" alt="上传成功后渲染" style="max-width: 196px">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="width: 600px;">
+                    <label class="layui-form-label">简介</label>
+                    <div class="layui-input-block">
+                        <textarea name="summary" lay-verify="required"  placeholder="请输入公司简介" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label"><span style="color: red">* </span>绑定用户</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="nick_name" disabled  lay-verify="required" value="" class="layui-input">
+                            <input type="hidden" name="member_ids" id="member_ids"  lay-verify="required" value="" class="layui-input">
+                            <a class="layui-btn layui-btn-xs" id="check">请选择关联用户</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">联系电话</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="tel" value="" lay-verify="required|phone" autocomplete="off" placeholder="请输入联系电话" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">邮箱</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="email" value="" lay-verify="required|email" autocomplete="off" placeholder="请输入邮箱" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="set-form-element">
+                            <i class="layui-icon layui-icon-ok"></i> 提交
+                        </button>
+                        <button type="button" class="layui-btn layui-btn-primary" id="close" onclick="javascript:history.back(-1)">
+                            <i class="layui-icon layui-icon-close"></i> 取消
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="layui-card" id="user_table" style="display: none">
+        <div class="layui-card-header layui-form layuiadmin-card-header-auto">
+            <!--列表页头部-->
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    关键字
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-input-inline" style="width: 300px">
+                        <input type="text" id="key" name="keyword" value="" placeholder="请输入用户姓名" class="layui-input" />
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" lay-submit="" lay-filter="LAY-search">
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                        <button  class="layui-btn layui-btn-danger" id="empty"  lay-submit="" lay-filter="LAY-search">
+                            <i class="layui-icon layui-icon-refresh layuiadmin-button-btn"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--表单主体-->
+        <div class="layui-card-body">
+            <table id="LAY-table-manage" lay-filter="LAY-table-manage"></table>
+            <!--提交按钮-->
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-sm" lay-event="getCheckData">确定</button>
+                </div>
+            </script>
+        </div>
+    </div>
+
+</div>
+{include file="common/footer"}
+<script>
+    layui.use(['layer','form','upload','table'], function() {
+        var $ = layui.jquery
+            ,layer = layui.layer
+            ,form = layui.form
+            ,upload = layui.upload
+            ,table = layui.table;
+
+        var myFile= null;
+        //上传LOGO
+        upload.render({
+            elem: '#logo'
+            ,auto:false
+            ,field:'logo'
+            ,choose:function (obj) {
+                obj.preview(function(index, file, result){
+                    $('#logo img').attr('src',result);
+                });
+            }
+        });
+
+        //上传封面图
+        upload.render({
+            elem: '#pic'
+            ,auto:false
+            ,field:'pic'
+            ,choose:function (obj) {
+                obj.preview(function(index, file, result){
+                    $('#pic img').attr('src',result);
+                });
+            }
+        });
+
+        var ids = new Set();//删除的id数组
+        var names = new Set();
+        var tableData = [];
+        table.render({
+            elem: '#LAY-table-manage'
+            , url: "{:url('admin/v1.Member/memberIndex')}"
+            , response: {
+                statusCode: 220 //成功的状态码，默认：0
+            }
+            ,toolbar: '#toolbarDemo'
+            ,defaultToolbar:['filter']
+            , cols: [[
+                { type: 'checkbox', width: 180}
+                ,{type: 'numbers', title: '序号', width: 180}
+                , {field: 'nick_name', title: '昵称', width: 280}
+                , {field: 'phone', title: '电话', width: 175}
+            ]]
+            , page: true
+            , limits: [10, 15]
+            , limit: 10
+            , text: {
+                none: '对不起，暂无相关数据' //默认：无数据
+            }
+            ,done:function (res, page, count) {
+                var data = res.data;
+                tableData = res.data;
+                data.forEach(function (val,index) {
+
+                    var falg = ids.has(val.id);
+                    if (falg) {
+                        res.data[index]["LAY_CHECKED"] = 'true';
+                        var index= res.data[index]['LAY_TABLE_INDEX'];
+                        $('tr[data-index=' + index + '] input[type="checkbox"]').prop('checked', true);
+                        $('tr[data-index=' + index + '] input[type="checkbox"]').next().addClass('layui-form-checked');
+                    }
+                });
+            }
+        });
+
+        var index = 0;
+        $('#check').click(function () {
+            index = layer.open({
+                type:1,
+                title: '选择用户',
+                area:['850px', '650px'],
+                content: $('#user_table'),
+            });
+        });
+
+        //监听表格复选框
+        table.on('checkbox(LAY-table-manage)',function (obj) {
+            if (obj.type=='all') {
+                if (obj.checked) {
+                    var data = table.checkStatus('LAY-table-manage').data;
+                    console.log(data);
+                    data.forEach(function (val,index) {
+                        ids.add(val.id);
+                        names.add(val.nick_name);
+                    });
+                } else {
+                    var data = table.checkStatus('LAY-table-manage').data;
+                    tableData.forEach(function (val,index) {
+                        ids.delete(val.id);
+                        names.delete(val.nick_name);
+                    });
+                }
+            } else {
+                if(obj.checked){
+                    ids.add(obj.data.id);
+                    names.add(obj.data.nick_name);
+                }else{
+                    ids.delete(obj.data.id);
+                    names.delete(obj.data.nick_name);
+                }
+            }
+        });
+
+        //头工具栏事件
+        table.on('toolbar(LAY-table-manage)', function(obj){
+            switch(obj.event){
+                case 'getCheckData':
+                    var nameList = Array.from(names);
+                    var idList = Array.from(ids);
+                    var nameFormat = "";
+                    nameList.forEach(function (val,index) {
+                        nameFormat = val+"  "+nameFormat;
+                    })
+                    $('#nick_name').val(nameFormat);
+                    $('#member_ids').val(idList);
+                    layer.close(index);
+            };
+        });
+    });
+</script>
+</body>
+</html>
